@@ -3,8 +3,6 @@ hasanbly basic scripting language
 <br>
 <br>
 <b>v3</b>
-<br>
-Required Mingw
 
 <br>
 <h1>Get Started</h1>

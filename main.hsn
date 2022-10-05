@@ -1,0 +1,22 @@
+DEF:str noname;
+DEF:int 12;
+DEF:int 10;
+
+<<^$^$Hi!;
+
+<<Hello, World!;
+<<What is your name?;
+>$:str0_;
+<<Welcome to hasanbly dear $:str0_.;
+
+<<;
+<$:int0_ * $:int1_ = ;
+M* $:int0_ $:int1_;
+<<$:int0_;
+
+<<;
+
+M+ $:str0_ $:int1_;
+<<$:str0_;
+
+EXIT;

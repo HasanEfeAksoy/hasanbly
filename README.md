@@ -3,6 +3,10 @@ hasanbly basic scripting language
 <br>
 <br>
 <b>v3</b>
+<br>
+if you want devoloping this project you can compile like this:
+<br>
+<i>g++ main.cpp -o hsnc.exe -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</i>
 
 <br>
 <h1>Get Started</h1>

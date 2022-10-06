@@ -583,6 +583,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -600,6 +604,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -625,6 +633,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -642,6 +654,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -667,6 +683,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -692,6 +712,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -717,6 +741,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
@@ -742,6 +770,10 @@ void run(std::string& text, std::vector<std::string>& lines)
                     else {
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
+                            break;
+                        }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }

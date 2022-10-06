@@ -29,6 +29,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
 <br>
 <p><i>
 &lt&ltHello, World!;
+<br>
+EXIT;
 </i></p>
 
 <br>
@@ -48,6 +50,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
   // This is comment line and
   <br>
   // this lines will remove at pre-interpretation time.
+  <br>
+  EXIT;
   </i>
   <br>
   <br>
@@ -68,6 +72,7 @@ It is just <i>interprete</i> and run your codes easily.</p>
   <br>
   &lt&lt$:str0_;
   <br>
+  EXIT;
   </i>
   <br>
   <br>
@@ -85,6 +90,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
   <br>
   <i>
   &ltHello;
+  <br>
+  EXIT;
   </i>
   <br>
   <br>
@@ -102,10 +109,13 @@ It is just <i>interprete</i> and run your codes easily.</p>
   <br>
   <i>
   &lt&ltHello;
+  <br>
+  EXIT;
   </i>
   <br>
   <br>
   output: <i>Hello</i>
+  <br>
   </p>
 </li>
 
@@ -125,6 +135,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
   &gt$:str0_;
   <br>
   &lt&lt$:str0_;
+  <br>
+  EXIT;
   </i>
   <br>
   <br>
@@ -153,30 +165,7 @@ It is just <i>interprete</i> and run your codes easily.</p>
   <br>
   &lt&lt$:int0_;
   <br>
-  <br>
-  // $:int0_ += $:int1_
-  <br>
-  M+ $:int0_ $:int1_;
-  <br>
-  <br>
-  // $:int0_ -= $:int1_
-  <br>
-  M- $:int0_ $:int1_;
-  <br>
-  <br>
-  // $:int0_ *= $:int1_
-  <br>
-  M* $:int0_ $:int1_;
-  <br>
-  <br>
-  // $:int0_ /= $:int1_
-  <br>
-  M/ $:int0_ $:int1_;
-  <br>
-  <br>
-  // $:int0_ %= $:int1_
-  <br>
-  M% $:int0_ $:int1_;
+  EXIT;
   </i>
   <br>
   <br>
@@ -190,8 +179,6 @@ It is just <i>interprete</i> and run your codes easily.</p>
   <h4>GOTO</h4>
   <br>
   <p>Going to line. You can using with line number or line number variable value.
-  <br>
-  <b>IMPORTANT: line numbers is calculated without comment lines and empty lines.</b>
   <br>
   <br>
   <i>
@@ -208,6 +195,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
   //&ltHi;
   <br>
   //GOTO $:int0_;
+  <br>
+  EXIT;
   </i>
   <br>
   <br>
@@ -220,7 +209,7 @@ It is just <i>interprete</i> and run your codes easily.</p>
 <li>
   <h4>EXIT</h4>
   <br>
-  <p>Ends the program. At the end of the program EXIT is not compulsory and not necessary.
+  <p>Ends the program. At the end of the program, you have to put EXIT command otherwise the program does not run.
   <br>
   <br>
   <i>
@@ -229,6 +218,8 @@ It is just <i>interprete</i> and run your codes easily.</p>
   EXIT;
   <br>
   &ltBye;
+  <br>
+  EXIT;
   </i>
   <br>
   <br>

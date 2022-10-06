@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 
+std::vector<bool> unInterpreteLines; // comment and empty lines (if interpretable false, if uninterpretable true)
 std::vector<std::string> stringVec; // değişkenleri tanımladığımız zaman depolanacak vector
 std::vector<int> intVec; // int vectoru
 
@@ -45,37 +46,34 @@ int main(int argc, char *argv[])
 }
 void run(std::string& text, std::vector<std::string>& lines)
 {
+    // unInterprete vectorune başlangıç değer ataması
+    for (int i = 0; i < lines.size(); i++) {
+        unInterpreteLines.push_back(false);
+    }
 
-    // yorum satırlarını silme
+
+    // yorum satırlarını ve boş satırları vectore atama
     for (int i = 0; i < lines.size(); i++)
     {
-        if (lines[i][0] == '/' && lines[i][1] == '/')
-        {
-            lines.erase(lines.begin() + i); // spesifik eleman sildiğimiz için +i ekliyoruz
-            i--;                         // erase yapıldığında lines[i]'nin gösterdiği değer aslında bir sonraki tur göstermesi gereken değer olduğu için i'yi bir azaltıyoruz.
+        if (lines[i].size() == 0 || (lines[i][0] == '/' && lines[i][1] == '/')) {
+            unInterpreteLines[i] = true;
         }
     }
 
 
-    // boşluk silme
+    // sol boşluk silme
     for (int i = 0; i < lines.size(); i++)
     {
-        if (lines[i].size() == 0) {
-            lines.erase(lines.begin() + i); // string vectoründeki boş elemanları yani tamamen boş satırları siliyoruz.
-            i--;
-        }
-        else {
-            for (int j = 0; j < lines[i].size(); j++)
+        for (int j = 0; j < lines[i].size(); j++)
+        {
+            if (lines[i][j] == ' ' || lines[i][j] == '\t') // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
             {
-                if (lines[i][j] != ' ') // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
-                {
-                    break;
-                }
-                else
-                {
-                    lines[i].erase(lines[i].begin()); // begin() e +j yapmaya gerek yok çünkü spesifik eleman silmiyoruz. hep baştaki boşluk harfini siliyoruz.
-                    j--;                           // yukardaki nedenden dolayı j-=1
-                }
+                lines[i].erase(lines[i].begin()); // begin() e +j yapmaya gerek yok çünkü spesifik eleman silmiyoruz. hep baştaki boşluk harfini siliyoruz.
+                j--;                           // yukardaki nedenden dolayı j-=1
+            }
+            else
+            {
+                break;
             }
         }
     }
@@ -84,6 +82,11 @@ void run(std::string& text, std::vector<std::string>& lines)
     // ; ile bitmeyen satır varsa error verme
     for (int i = 0; i < lines.size(); i++)
     {    
+        if (unInterpreteLines[i]) { // uninterprete line a gelindiğinde görmezden gel ve geç
+            continue;
+        }
+
+
         if (lines[i][lines[i].size() - 1] != ';') // satırın ; ile bitip bitmediğini kontrol ediyoruz.
         {
             std::cout << "\nERROR:\nmessage: missing semicolon.\n";
@@ -95,11 +98,32 @@ void run(std::string& text, std::vector<std::string>& lines)
     }
 
 
+    // EXIT ile bitmediyse error verme
+    for (int i = lines.size() - 1; i >= 0; i--) { // for döngüsünü sondan başlattık çünkü exit sonda mı onu kontrol ettireceğiz.
+        if (unInterpreteLines[i]) { // eğer exit komutundan sonra uninterprete satırlar varsa onları görmezden gel.
+            continue;
+        }
+
+        if (lines[i].size() != 4 || lines[i][0] != 'E' || lines[i][1] != 'X' || lines[i][2] != 'I' || lines[i][3] != 'T') { // sonda exit var mı diye kontrol ediyoruz yoksa error
+            std::cout << "\nERROR:\nmessage: program needs EXIT command at the end of the program.\n";
+            exit(0);
+        }
+        else {
+            break; // sonda EXIT kullanmış demek oluyor.
+        }
+    }
+
+
     
 
 
     for (int i = 0; i < lines.size(); i++)
     {
+        if (unInterpreteLines[i]) { // uninterprete olan (comment lines and empty lines) satırlar varsa geçmek
+            continue;
+        }
+
+
         if (lines[i][0] == '<') // print etmek için ilk harf ne onu kontrol ediyoruz. yukarda zaten soldaki boşlukları siliğimiz için ilk harf diye kontrol edebiliriz.
         {
             std::string myLine = lines[i];

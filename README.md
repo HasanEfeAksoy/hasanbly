@@ -47,9 +47,9 @@ EXIT;
   <br>
   <br>
   <i>
-  // This is comment line and
+  // This is comment line
   <br>
-  // this lines will remove at pre-interpretation time.
+  // this lines will do not care by interpreter.
   <br>
   EXIT;
   </i>

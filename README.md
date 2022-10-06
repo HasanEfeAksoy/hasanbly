@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v5</b>
+<b>v6</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -201,6 +201,43 @@ EXIT;
   <br>
   <br>
   output: <i>HiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHi........</i>
+  </p>
+</li>
+
+<br>
+
+<br>
+
+<li>
+  <h4>IF</h4>
+  <br>
+  <p>Like box office checkpoint. If true: can pass, else: go to a line.
+  <br>
+  You have to use == != &lt&lt &gt&gt &lt= &gt= and must use variable (not pure values) and use ELSE:&ltpure number&gt
+  <br>
+  IMPORTANT: you have to string-string and int-int when using == or !=. but if using &lt&lt &gt&gt &lt= &gt= you have to input parameters just int-int.
+  <br>
+  <br>
+  <i>
+  DEF:int 0;
+  <br>
+  DEF:int 0;
+  <br>
+  // if 0 == 0
+  <br>
+  // it returns true. so the interpreter does not go to line 8. it does not anything right now.
+  <br>
+  // but if you put != the interpreter goes to line 8.
+  <br>
+  IF== $:int0_ $:int1_ ELSE:8;
+  <br>
+  &lt&ltHello everyone;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>Hello everyone</i>
   </p>
 </li>
 

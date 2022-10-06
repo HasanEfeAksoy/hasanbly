@@ -459,6 +459,306 @@ void run(std::string& text, std::vector<std::string>& lines)
         {
             exit(0);
         }
+
+        else if (lines[i][0] == 'I' && lines[i][1] == 'F') // if condition
+        {
+            std::string defFirst = ""; // first state
+            std::string defSecond = ""; // second state
+            std::string elseLineNumber = ""; // else go to <number>
+
+            bool isFirstString = false;
+            bool isSecondString = false;
+
+            bool canPass = false;
+
+
+            // string
+            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r') {
+                int whereFirstEnded = 0;
+                int whereSecondEnded = 0;
+                
+                for (int j = 10; j < lines[i].size(); j++) {
+                    if (lines[i][j] != '_') {
+                        defFirst += lines[i][j];
+                    }
+                    else {
+                        whereFirstEnded = j + 1;
+                        break;
+                    }
+                }
+
+                // have to second variable is string
+                if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':' && lines[i][whereFirstEnded + 3] == 's' && lines[i][whereFirstEnded + 4] == 't' && lines[i][whereFirstEnded + 5] == 'r') {
+                    
+                    
+                    for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                        if (lines[i][j] != '_') {
+                            defSecond += lines[i][j];
+                        }
+                        else {
+                            whereSecondEnded = j + 1;
+                            break;
+                        }
+                    }
+
+                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == ':') {
+                        for (int j = whereSecondEnded + 6; j < lines[i].size(); j++) {
+                            elseLineNumber += lines[i][j];
+                        }
+
+                        isFirstString = true;
+                        isSecondString = true;
+                    }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition.\n";
+                        break;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition.\n";
+                    break;
+                }
+            }
+            // int
+            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't') {
+                int whereFirstEnded = 0;
+                int whereSecondEnded = 0;
+                
+                for (int j = 10; j < lines[i].size(); j++) {
+                    if (lines[i][j] != '_') {
+                        defFirst += lines[i][j];
+                    }
+                    else {
+                        whereFirstEnded = j + 1;
+                        break;
+                    }
+                }
+
+                // have to second variable is int
+                if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':' && lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't') {
+                    for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                        if (lines[i][j] != '_') {
+                            defSecond += lines[i][j];
+                        }
+                        else {
+                            whereSecondEnded = j + 1;
+                            break;
+                        }
+                    }
+
+                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == ':') {
+                        for (int j = whereSecondEnded + 6; j < lines[i].size(); j++) {
+                            elseLineNumber += lines[i][j];
+                        }
+
+                        isFirstString = false;
+                        isSecondString = false;
+                    }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition.\n";
+                        break;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition.\n";
+                    break;
+                }
+            }
+
+
+
+            // ==
+            // string-string
+            // int-int
+            if (lines[i][2] == '=' && lines[i][3] == '=' && lines[i][4] == ' ') {
+                if (isFirstString && isSecondString) {
+                    // control
+                    std::string first = stringVec[std::stoi(defFirst)];
+                    std::string second = stringVec[std::stoi(defSecond)];
+                    
+                    if (first == second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first == second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF== condition.\n";
+                    break;
+                }
+            }
+            // !=
+            // string-string
+            // int-int
+            else if (lines[i][2] == '!' && lines[i][3] == '=') {
+                if (isFirstString && isSecondString) {
+                    // control
+                    std::string first = stringVec[std::stoi(defFirst)];
+                    std::string second = stringVec[std::stoi(defSecond)];
+                    
+                    if (first != second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first != second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF!= condition.\n";
+                    break;
+                }
+            }
+            // >
+            // int-int
+            else if (lines[i][2] == '>' && lines[i][3] == '>') {
+                if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first > second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>> condition.\n";
+                    break;
+                }
+            }
+            // >=
+            //int-int
+            else if (lines[i][2] == '>' && lines[i][3] == '=') {
+                if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first >= second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>= condition.\n";
+                    break;
+                }
+            }
+            // <
+            // int-int
+            else if (lines[i][2] == '<' && lines[i][3] == '<') {
+                if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first < second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<< condition.\n";
+                    break;
+                }
+            }
+            // <=
+            // int-int
+            else if (lines[i][2] == '<' && lines[i][3] == '=') {
+                if (!isFirstString && !isSecondString) {
+                    // control
+                    int first = intVec[std::stoi(defFirst)];
+                    int second = intVec[std::stoi(defSecond)];
+                    
+
+                    if (first <= second) {
+                        // correct and pass
+                        continue;
+                    }
+                    else {
+                        // go to command
+                        int int_ElseLineNumber = std::stoi(elseLineNumber);
+                        i = int_ElseLineNumber - 2;
+                        continue;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<= condition.\n";
+                    break;
+                }
+            }
+
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using == != >> >= << <= in IF condition.\n";
+                break;
+            }
+        }
+        
+
         
         // under devolopment
         else

@@ -4,6 +4,8 @@ DEF:int 10;
 
 <<^$^$Hi!;
 
+IF!= $:int0_ $:int1_ ELSE:25;
+
 <<Hello, World!;
 <<What is your name?;
 >$:str0_;
@@ -17,6 +19,7 @@ M* $:int0_ $:int1_;
 <<;
 
 M+ $:str0_ $:int1_;
+
 <<$:str0_;
 
 EXIT;

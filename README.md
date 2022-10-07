@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v6</b>
+<b>v7</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -238,6 +238,85 @@ EXIT;
   <br>
   <br>
   output: <i>Hello everyone</i>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>INC</h4>
+  <br>
+  <p>Increase the variable.
+  <br>
+  <br>
+  <i>
+  DEF:int 0;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  INC $:int0_;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>0<br>1</i>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>DEC</h4>
+  <br>
+  <p>Decrease the variable.
+  <br>
+  <br>
+  <i>
+  DEF:int 1;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  DEC $:int0_;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>1<br>0</i>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>NULL</h4>
+  <br>
+  <p>Set value of null to variable.
+  <br>
+  if variable is int, new value is 0.
+  <br>
+  if variable is string, new value is  . (nothing)
+  <br>
+  <br>
+  <i>
+  DEF:int 1;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  NULL $:int0_;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>1<br>0</i>
   </p>
 </li>
 

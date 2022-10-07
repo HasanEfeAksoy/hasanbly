@@ -61,41 +61,49 @@ void run(std::string& text, std::vector<std::string>& lines)
     }
 
 
-    // sol boşluk silme
-    for (int i = 0; i < lines.size(); i++)
-    {
-        for (int j = 0; j < lines[i].size(); j++)
-        {
+    // sol ve sağ boşluk silme
+    for (int i = 0; i < lines.size(); i++) {
+        if (unInterpreteLines[i]) continue;
+        
+        
+        for (int j = 0; j < lines[i].size(); j++) {
             if (lines[i][j] == ' ' || lines[i][j] == '\t') // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
             {
                 lines[i].erase(lines[i].begin()); // begin() e +j yapmaya gerek yok çünkü spesifik eleman silmiyoruz. hep baştaki boşluk harfini siliyoruz.
-                j--;                           // yukardaki nedenden dolayı j-=1
+                j--;
             }
-            else
-            {
+            else {
+                break;
+            }
+        }
+        
+        for (int j = 1; j < lines.size(); j++) {
+            if (lines[i][lines[i].size() - j] != ';') {
+                lines[i].pop_back(); j--;
+            }
+            else {
                 break;
             }
         }
     }
     
-
+    
     // ; ile bitmeyen satır varsa error verme
-    for (int i = 0; i < lines.size(); i++)
-    {    
+    for (int i = 0; i < lines.size(); i++) {
         if (unInterpreteLines[i]) { // uninterprete line a gelindiğinde görmezden gel ve geç
             continue;
         }
-
-
+        
         if (lines[i][lines[i].size() - 1] != ';') // satırın ; ile bitip bitmediğini kontrol ediyoruz.
         {
             std::cout << "\nERROR:\nmessage: missing semicolon.\n";
             exit(0);
         }
         else {
-            lines[i].erase(lines[i].begin() + lines[i].size() - 1); // sondaki noktalı virgülü siliyoruz.   
+            lines[i].pop_back(); // sondaki noktalı virgülü siliyoruz.
         }
     }
+
 
 
     // EXIT ile bitmediyse error verme
@@ -790,6 +798,61 @@ void run(std::string& text, std::vector<std::string>& lines)
             }
         }
         
+
+        else if (lines[i][0] == 'I' && lines[i][1] == 'N' && lines[i][2] == 'C' && lines[i][3] == ' ') {
+            
+            if (lines[i][4] != '$' || lines[i][5] != ':' || lines[i][6] != 'i' || lines[i][7] != 'n' || lines[i][8] != 't' || lines[i][lines[i].size() - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using int variable when using INC command.\n";
+                break;
+            }
+
+            std::string defCopy = "";
+            for (int j = 9; j < lines[i].size() - 1; j++) {
+                defCopy += lines[i][j];
+            }
+
+            intVec[std::stoi(defCopy)]++;
+        }
+        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'C' && lines[i][3] == ' ') {
+            
+            if (lines[i][4] != '$' || lines[i][5] != ':' || lines[i][6] != 'i' || lines[i][7] != 'n' || lines[i][8] != 't' || lines[i][lines[i].size() - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using int variable when using DEC command.\n";
+                break;
+            }
+
+            std::string defCopy = "";
+            for (int j = 9; j < lines[i].size() - 1; j++) {
+                defCopy += lines[i][j];
+            }
+
+            intVec[std::stoi(defCopy)]--;
+        }
+
+
+        else if (lines[i][0] == 'N' && lines[i][1] == 'U' && lines[i][2] == 'L' && lines[i][3] == 'L' && lines[i][4] == ' ') {
+            
+            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][lines[i].size() - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a variable when using NULL command.\n";
+                break;
+            }
+
+            std::string defCopy = "";
+            for (int j = 10; j < lines[i].size() - 1; j++) {
+                defCopy += lines[i][j];
+            }
+
+            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r')
+                stringVec[std::stoi(defCopy)] = "";
+            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't')
+                intVec[std::stoi(defCopy)] = 0;
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using int or string variable when using NULL command.\n";
+                break;
+            }
+        }
+
+
+
 
         
         // under devolopment

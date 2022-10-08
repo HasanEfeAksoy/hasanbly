@@ -7,12 +7,12 @@ hasanbly basic scripting language
 <br>
 if you want devoloping this project you can compile like this:
 <br>
-<b><i>g++ main.cpp -o hsnc.exe -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</i></b>
+<b><i>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</i></b>
 
 <br>
 <h1>Get Started</h1>
 <br>
-Download hsnc.exe file and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
+Download hsnc.exe file (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
 <br>
 <p>Hasanbly is open source, non memory safe (for now) and non parser basic scripting language created with C++.
 <br>

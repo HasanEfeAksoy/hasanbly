@@ -12,7 +12,7 @@ if you want devoloping this project you can compile like this:
 <br>
 <h1>Get Started</h1>
 <br>
-Download hsnc.exe file (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
+Download hsnc.exe (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
 <br>
 <p>Hasanbly is open source, non memory safe (for now) and non parser basic scripting language created with C++.
 <br>

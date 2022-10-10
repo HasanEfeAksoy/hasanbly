@@ -78,8 +78,9 @@ void run(std::string& text, std::vector<std::string>& lines)
         }
         
         for (int j = 1; j < lines.size(); j++) {
-            if (lines[i][lines[i].size() - j] != ';') {
-                lines[i].pop_back(); j--;
+            if (lines[i][lines[i].size() - j] == ' ' || lines[i][lines[i].size() - j] == '\t') {
+                lines[i].pop_back();
+                j--;
             }
             else {
                 break;
@@ -96,7 +97,7 @@ void run(std::string& text, std::vector<std::string>& lines)
         
         if (lines[i][lines[i].size() - 1] != ';') // satırın ; ile bitip bitmediğini kontrol ediyoruz.
         {
-            std::cout << "\nERROR:\nmessage: missing semicolon.\n";
+            std::cout << "\nERROR:\nmessage: missing semicolon. line:" << std::to_string(i + 1) << "\n";
             exit(0);
         }
         else {
@@ -170,12 +171,12 @@ void run(std::string& text, std::vector<std::string>& lines)
                             myLine.replace(j, controller, std::to_string(intVec[std::stoi(num)])); // r bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz int vectorundan alacağımız string değeri gösterir..      
                         }
                         else {
-                            std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you call it.\n";
+                            std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: need ':' to call variable.\n";
+                        std::cout << "\nERROR:\nmessage: need ':' to call variable. line:" << std::to_string(i + 1) << "\n";
                         exit(0);
                     }
                 }
@@ -197,8 +198,8 @@ void run(std::string& text, std::vector<std::string>& lines)
         else if (lines[i][0] == '>') // input aldırmak için
         {
             if (lines[i][1] != '$' || lines[i][lines[i].size() - 1] != '_') {
-                std::cout << "\nERROR:\nmessage: > command need a variable.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: > command need a variable. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             std::string in = "";
@@ -215,13 +216,13 @@ void run(std::string& text, std::vector<std::string>& lines)
                     isStr = false;
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you call it.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else {
-                std::cout << "\nERROR:\nmessage: need ':' to call variable.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: need ':' to call variable. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             // $ içinde verilen indexe ulaşma.
@@ -256,8 +257,8 @@ void run(std::string& text, std::vector<std::string>& lines)
                 intVec.push_back(std::stoi(defined)); // vectore kaydediyoruz.
             }
             else {
-                std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you define it.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you define it. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }            
         }
         else if (lines[i][0] == 'M')
@@ -274,7 +275,7 @@ void run(std::string& text, std::vector<std::string>& lines)
 
 
             if (lines[i][3] != '$') {
-                std::cout << "\nERROR:\nmessage: need a variable when using M command.\n";
+                std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
@@ -294,7 +295,7 @@ void run(std::string& text, std::vector<std::string>& lines)
                             j += 2;
                         }
                         else {
-                            std::cout << "\nERROR:\nmessage: need a variable when using M command.\n";
+                            std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                     }
@@ -316,12 +317,12 @@ void run(std::string& text, std::vector<std::string>& lines)
                                     j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:int) 4 char.
                                 }
                                 else {
-                                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you using it.\n";
+                                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
                                     exit(0);
                                 }
                             }
                             else {
-                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable.\n";
+                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable. line:" << std::to_string(i + 1) << "\n";
                                 exit(0);
                             }
                         }
@@ -345,12 +346,12 @@ void run(std::string& text, std::vector<std::string>& lines)
                                     j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:int) 4 char.
                                 }
                                 else {
-                                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you using it.\n";
+                                    std::cout << "\nERROR:\nmessage: need :str or :int type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
                                     exit(0);
                                 }
                             }
                             else {
-                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable.\n";
+                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable. line:" << std::to_string(i + 1) << "\n";
                                 exit(0);
                             }
                         }
@@ -373,8 +374,8 @@ void run(std::string& text, std::vector<std::string>& lines)
                 else if (firstIsStr && !secondIsStr) stringVec[std::stoi(defCopy)] = std::to_string(intVec[std::stoi(secondCopy)]);
                 else if (!firstIsStr && secondIsStr) intVec[std::stoi(defCopy)] = std::stoi(stringVec[std::stoi(secondCopy)]);
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M= command you have to using str=str or int=int or str=int or int=str.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M= command you have to using str=str or int=int or str=int or int=str. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (lines[i][1] == '+')
@@ -384,46 +385,46 @@ void run(std::string& text, std::vector<std::string>& lines)
                 else if (firstIsStr && !secondIsStr) stringVec[std::stoi(defCopy)] += std::to_string(intVec[std::stoi(secondCopy)]);
                 else if (!firstIsStr && secondIsStr) intVec[std::stoi(defCopy)] += std::stoi(stringVec[std::stoi(secondCopy)]);
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M+ command you have to using str+str or int+int or str+int or int+str.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M+ command you have to using str+str or int+int or str+int or int+str. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (lines[i][1] == '-')
             {
                 if (!firstIsStr && !secondIsStr) intVec[std::stoi(defCopy)] -= intVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M- command you have to using int+int.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M- command you have to using int+int. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (lines[i][1] == '*')
             {
                 if (!firstIsStr && !secondIsStr) intVec[std::stoi(defCopy)] *= intVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M* command you have to using int+int.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M* command you have to using int+int. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (lines[i][1] == '/')
             {
                 if (!firstIsStr && !secondIsStr) intVec[std::stoi(defCopy)] /= intVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M/ command you have to using int+int.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M/ command you have to using int+int. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (lines[i][1] == '%')
             {
                 if (!firstIsStr && !secondIsStr) intVec[std::stoi(defCopy)] %= intVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M% command you have to using int+int.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: when using M% command you have to using int+int. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else
             {
-                std::cout << "\nERROR:\nmessage: false operator.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: false operator. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
         }
         
@@ -438,8 +439,8 @@ void run(std::string& text, std::vector<std::string>& lines)
                 }
                 defCopy = std::to_string(intVec[std::stoi(defCopy)]);
                 if (std::stoi(defCopy) % 1 != 0) { //tam sayı mı kontrol
-                    std::cout << "\nERROR:\nmessage: GOTO command need line number as integer.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: GOTO command need line number as integer. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             else if (std::stoi(std::to_string(lines[i][5])) % 1 == 0) { //tam sayı mı kontrol
@@ -450,14 +451,14 @@ void run(std::string& text, std::vector<std::string>& lines)
             }
             else
             {
-                std::cout << "\nERROR:\nmessage: You have to using integer number or as variable while using GOTO.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: You have to using integer number or as variable while using GOTO. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             int integerNumberOfLineNumber = std::stoi(defCopy);
             if (integerNumberOfLineNumber < 1 || integerNumberOfLineNumber > lines.size()) {
-                std::cout << "\nERROR:\nmessage: Line cannot found. It can be too big or too small.\n";
-                break;    
+                std::cout << "\nERROR:\nmessage: Line cannot found. It can be too big or too small. line:" << std::to_string(i + 1) << "\n";
+                exit(0);    
             }
 
             i = integerNumberOfLineNumber - 2; //go to i. satır
@@ -518,13 +519,13 @@ void run(std::string& text, std::vector<std::string>& lines)
                         isSecondString = true;
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition.\n";
-                        break;
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // int
@@ -563,13 +564,13 @@ void run(std::string& text, std::vector<std::string>& lines)
                         isSecondString = false;
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition.\n";
-                        break;
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
 
@@ -592,8 +593,8 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";;
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -613,16 +614,16 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF== condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF== condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // !=
@@ -642,8 +643,8 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -663,16 +664,16 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF!= condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int in IF!= condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // >
@@ -692,16 +693,16 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>> condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>> condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // >=
@@ -721,16 +722,16 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>= condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF>= condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // <
@@ -750,16 +751,16 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<< condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<< condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
             // <=
@@ -779,22 +780,22 @@ void run(std::string& text, std::vector<std::string>& lines)
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:.\n";
-                            break;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<= condition.\n";
-                    break;
+                    std::cout << "\nERROR:\nmessage: you have to using int-int in IF<= condition. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
                 }
             }
 
             else {
-                std::cout << "\nERROR:\nmessage: you have to using == != >> >= << <= in IF condition.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: you have to using == != >> >= << <= in IF condition. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
         }
         
@@ -802,8 +803,8 @@ void run(std::string& text, std::vector<std::string>& lines)
         else if (lines[i][0] == 'I' && lines[i][1] == 'N' && lines[i][2] == 'C' && lines[i][3] == ' ') {
             
             if (lines[i][4] != '$' || lines[i][5] != ':' || lines[i][6] != 'i' || lines[i][7] != 'n' || lines[i][8] != 't' || lines[i][lines[i].size() - 1] != '_') {
-                std::cout << "\nERROR:\nmessage: you have to using int variable when using INC command.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: you have to using int variable when using INC command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             std::string defCopy = "";
@@ -816,8 +817,8 @@ void run(std::string& text, std::vector<std::string>& lines)
         else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'C' && lines[i][3] == ' ') {
             
             if (lines[i][4] != '$' || lines[i][5] != ':' || lines[i][6] != 'i' || lines[i][7] != 'n' || lines[i][8] != 't' || lines[i][lines[i].size() - 1] != '_') {
-                std::cout << "\nERROR:\nmessage: you have to using int variable when using DEC command.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: you have to using int variable when using DEC command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             std::string defCopy = "";
@@ -832,8 +833,8 @@ void run(std::string& text, std::vector<std::string>& lines)
         else if (lines[i][0] == 'N' && lines[i][1] == 'U' && lines[i][2] == 'L' && lines[i][3] == 'L' && lines[i][4] == ' ') {
             
             if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][lines[i].size() - 1] != '_') {
-                std::cout << "\nERROR:\nmessage: you have to using a variable when using NULL command.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: you have to using a variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
 
             std::string defCopy = "";
@@ -846,11 +847,38 @@ void run(std::string& text, std::vector<std::string>& lines)
             else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't')
                 intVec[std::stoi(defCopy)] = 0;
             else {
-                std::cout << "\nERROR:\nmessage: you have to using int or string variable when using NULL command.\n";
-                break;
+                std::cout << "\nERROR:\nmessage: you have to using int or string variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
         }
 
+        else if (lines[i][0] == 'F' && lines[i][1] == 'R' && lines[i][2] == 'E' && lines[i][3] == 'E' && lines[i][4] == ' ') {
+            
+            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][lines[i].size() - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a variable when using FREE command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+
+            std::string defCopy = "";
+            for (int j = 10; j < lines[i].size() - 1; j++) {
+                defCopy += lines[i][j];
+            }
+
+            int index = std::stoi(defCopy);
+
+            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r') {
+                stringVec[index] = "";
+                stringVec.erase(stringVec.begin() + index);
+            }
+            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't') {
+                intVec[index] = 0;
+                intVec.erase(intVec.begin() + index);
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using int or string variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
 
 
 
@@ -858,8 +886,8 @@ void run(std::string& text, std::vector<std::string>& lines)
         // under devolopment
         else
         {
-            std::cout << "ERROR!\nmessage: wrong command.\n";
-            break;
+            std::cout << "ERROR!\nmessage: wrong command. line:" << std::to_string(i + 1) << "\n";
+            exit(0);
         }
     }
 }

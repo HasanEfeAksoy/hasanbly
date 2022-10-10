@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v7</b>
+<b>v8</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -317,6 +317,31 @@ EXIT;
   <br>
   <br>
   output: <i>1<br>0</i>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>FREE</h4>
+  <br>
+  <p>Delete the variable and set value of memory to null.
+  <br>
+  <br>
+  <i>
+  DEF:int 5;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  FREE $:int0_;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>5<br>0</i>
   </p>
 </li>
 

@@ -53,19 +53,9 @@ void run(std::string& text, std::vector<std::string>& lines)
 
 
     // yorum satırlarını ve boş satırları vectore atama
+    // sol boşluk silme
     for (int i = 0; i < lines.size(); i++)
     {
-        if (lines[i].size() == 0 || (lines[i][0] == '/' && lines[i][1] == '/')) {
-            unInterpreteLines[i] = true;
-        }
-    }
-
-
-    // sol ve sağ boşluk silme
-    for (int i = 0; i < lines.size(); i++) {
-        if (unInterpreteLines[i]) continue;
-        
-        
         for (int j = 0; j < lines[i].size(); j++) {
             if (lines[i][j] == ' ' || lines[i][j] == '\t') // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
             {
@@ -76,7 +66,20 @@ void run(std::string& text, std::vector<std::string>& lines)
                 break;
             }
         }
+
+
+        if (lines[i].size() == 0 || (lines[i][0] == '/' && lines[i][1] == '/')) {
+            unInterpreteLines[i] = true;
+            lines[i] = "";
+        }
+    }
+
+
+    // sağ boşluk silme
+    for (int i = 0; i < lines.size(); i++) {
+        if (unInterpreteLines[i]) continue;
         
+
         for (int j = 1; j < lines.size(); j++) {
             if (lines[i][lines[i].size() - j] == ' ' || lines[i][lines[i].size() - j] == '\t') {
                 lines[i].pop_back();

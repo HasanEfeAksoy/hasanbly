@@ -1322,7 +1322,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
             }
             else {
-                std::cout << "\nERROR:\nmessage: you have to using int or double variable when using DEC command. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: you have to using variable when using DEC command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
         }

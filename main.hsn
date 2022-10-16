@@ -1,10 +1,10 @@
 DEF:str noname;
 DEF:int 12;
 DEF:int 10;
-
+DEF:dbl 10.1;
 <<^$^$Hi!;
 
-IF!= $:int0_ $:int1_ ELSE:33;
+IF>> $:dbl0_ $:int1_ ELSE:33;
 
 <<Hello, World!;
 <<What is your name?;

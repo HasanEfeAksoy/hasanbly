@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v8</b>
+<b>v9</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -64,7 +64,7 @@ EXIT;
 <li>
   <h4>DEF</h4>
   <br>
-  <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string (int-str). To use the variable, you must know the order of the variable.
+  <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl). To use the variable, you must know the order of the variable.
   <br>
   <br>
   <i>
@@ -72,11 +72,19 @@ EXIT;
   <br>
   &lt&lt$:str0_;
   <br>
+  DEF:int 15;
+  <br>
+  &lt&lt$:int0_;
+  <br>
+  DEF:dbl 4.5;
+  <br>
+  &lt&lt$:dbl0_;
+  <br>
   EXIT;
   </i>
   <br>
   <br>
-  output: <i>empty</i>
+  output: <i>empty<br>15<br>4.500000</i>
   </p>
 </li>
 
@@ -149,9 +157,7 @@ EXIT;
 <li>
   <h4>M</h4>
   <br>
-  <p>You can using math operators like = + - * / %. But you have to using variables. You can convert int to string or string to int with use M command.
-  <br>
-  You can string += string, string += int, int += string, int += int and <br> string = string, string = int, int = string, int = int
+  <p>You can using math operators like = + - * / %. But you have to using variables. You can convert type of variables with use M= command.
   <br>
   <br>
   <i>
@@ -215,7 +221,7 @@ EXIT;
   <br>
   You have to use == != &lt&lt &gt&gt &lt= &gt= and must use variable (not pure values) and use ELSE:&ltpure number&gt
   <br>
-  IMPORTANT: you have to string-string and int-int when using == or !=. but if using &lt&lt &gt&gt &lt= &gt= you have to input parameters just int-int.
+  IMPORTANT: you have to string-string or int-int or double-double when using == or !=. but if using &lt&lt &gt&gt &lt= &gt= you have to input parameters just int-int/double or double-double/int.
   <br>
   <br>
   <i>
@@ -246,7 +252,7 @@ EXIT;
 <li>
   <h4>INC</h4>
   <br>
-  <p>Increase the variable.
+  <p>Increase the variable. You can use for int and double.
   <br>
   <br>
   <i>
@@ -271,7 +277,7 @@ EXIT;
 <li>
   <h4>DEC</h4>
   <br>
-  <p>Decrease the variable.
+  <p>Decrease the variable. You can use for int and double.
   <br>
   <br>
   <i>
@@ -298,9 +304,11 @@ EXIT;
   <br>
   <p>Set value of null to variable.
   <br>
+  if variable is string, new value is ''. (nothing)
+  <br>
   if variable is int, new value is 0.
   <br>
-  if variable is string, new value is  . (nothing)
+  if variable is double, new value is 0.0.
   <br>
   <br>
   <i>

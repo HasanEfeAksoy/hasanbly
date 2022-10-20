@@ -1,10 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <stdlib.h>
+#include <math.h>
+//#include <stdlib.h>
 #include <fstream>
 #include <algorithm>
 
+
+#define PI 3.14159265
 
 
 void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec);
@@ -303,14 +306,28 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             bool firstCalculated = false;
             bool secondCalculated = false;
 
+            std::string process = "";
+            
+            for (int j = 1; j < lines[i].size(); j++) {
+                if (lines[i][j] != ' ')
+                    process += lines[i][j];
+                else
+                    break;
+            }
+            // ne işlemi olduğunu kaydediyoruz
 
-            if (lines[i][3] != '$') {
+
+            if (lines[i][process.size() + 1] != ' ' || lines[i][process.size() + 2] != '$') {
                 std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
             // $ içinde verilen indexe ulaşma.
-            for (int j = 4; j < lines[i].size(); j++)
+            // process.size() + 2 nedeni şu: örneğin MSIN $:int0_ $:int1_; dedi, SIN 3 karakterden
+            // oluşuyor M harfi ile 4 karakter. 0, 1, 2, 3. indexler yazılı 4. index boşluk karakteri
+            // 3 + 1 demek boşluk karakterini almak demek ama biz ondan sonrasını istiyoruz yani $ karakterini bu yüzden +2.
+            // ama biz kontrolü yukardaki if ile yaptığımız için +3 (direkt sayıyı alıyoruz)
+            for (int j = process.size() + 3; j < lines[i].size(); j++)
             {
                 if (lines[i][j] == '_')
                 {
@@ -373,17 +390,17 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                                 if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r') {
                                     typeFirst = 0;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:str) 4 char.
+                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:str) 4 char.
                                 }
                                 else if (lines[i][j + 1] == 'i' && lines[i][j + 2] == 'n' && lines[i][j + 3] == 't') {
                                     typeFirst = 1;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:int) 4 char.
+                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:int) 4 char.
                                 }
                                 else if (lines[i][j + 1] == 'd' && lines[i][j + 2] == 'b' && lines[i][j + 3] == 'l') {
                                     typeFirst = 2;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:dbl) 4 char.
+                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:dbl) 4 char.
                                 }
                                 else {
                                     std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
@@ -403,7 +420,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
 
 
-            if (lines[i][1] == '=')
+            if (process == "=")
             {
                 // 1. str str
                 // 2. str int
@@ -424,11 +441,11 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = 0.0 + intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = doubleVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M= command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M=. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
-            else if (lines[i][1] == '+')
+            else if (process == "+")
             {
                 // 1. str str
                 // 2. str int
@@ -449,11 +466,11 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] += 0.0 + intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] += doubleVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M+ command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M+. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
-            else if (lines[i][1] == '-')
+            else if (process == "-")
             {
                 // 1. int int
                 // 2. int dbl
@@ -464,12 +481,12 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] -= 0.0 + intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] -= doubleVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M- command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage:found incompatible variable types when using M-. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
 
             }
-            else if (lines[i][1] == '*')
+            else if (process == "*")
             {
                 // 1. int int
                 // 2. int dbl
@@ -480,11 +497,11 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] *= 0.0 + intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] *= doubleVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M* command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M*. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
-            else if (lines[i][1] == '/')
+            else if (process == "/")
             {
                 // 1. int int
                 // 2. int dbl
@@ -495,28 +512,133 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] /= 0.0 + intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] /= doubleVec[std::stoi(secondCopy)];
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M/ command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M/. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
-            else if (lines[i][1] == '%')
+            else if (process == "%")
             {
                 // 1. int int
                 // 2. int dbl
                 if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] %= intVec[std::stoi(secondCopy)];
                 else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] %= static_cast<int>(doubleVec[std::stoi(secondCopy)]);
                 else {
-                    std::cout << "\nERROR:\nmessage: when using M% command you have to using perfect variable types. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M%. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
+
+            else if (process == ".SIN") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = sin(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SIN. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".COS") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = cos(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COS. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".TAN") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = tan(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TAN. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".COT") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = cos(doubleVec[std::stoi(secondCopy)] * PI / 180) / sin(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COT. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+
+            else if (process == ".ASIN") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = asin(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASIN. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ACOS") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = acos(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOS. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ATAN") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = atan(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATAN. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+
+            else if (process == ".ABS") {
+                // 1. int int
+                // 2. int dbl
+                // 3. dbl dbl
+                // 4. dbl dbl
+                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = abs(intVec[std::stoi(secondCopy)]);
+                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(abs(doubleVec[std::stoi(secondCopy)]));
+                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = abs(0.0 + intVec[std::stoi(secondCopy)]);
+                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = abs(doubleVec[std::stoi(secondCopy)]);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ABS. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".SQRT") {
+                // 1. int int
+                // 2. int dbl
+                // 3. dbl dbl
+                // 4. dbl dbl
+                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = static_cast<int>(sqrt(intVec[std::stoi(secondCopy)]));
+                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(sqrt(doubleVec[std::stoi(secondCopy)]));
+                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = sqrt(0.0 + intVec[std::stoi(secondCopy)]);
+                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = sqrt(doubleVec[std::stoi(secondCopy)]);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SQRT. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".POW") {
+                // 1. int int
+                // 2. int dbl
+                // 3. dbl dbl
+                // 4. dbl dbl
+                // first param is x and second param is y -> (x = x to the y)
+                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = pow(intVec[std::stoi(defCopy)], intVec[std::stoi(secondCopy)]);
+                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(pow(intVec[std::stoi(defCopy)], doubleVec[std::stoi(secondCopy)]));
+                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = pow(doubleVec[std::stoi(defCopy)], 0.0 + intVec[std::stoi(secondCopy)]);
+                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = pow(doubleVec[std::stoi(defCopy)], doubleVec[std::stoi(secondCopy)]);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.POW. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            
+
             else
             {
-                std::cout << "\nERROR:\nmessage: false operator. need + - * / %. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: false math operator. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
         }
         
+
         else if (lines[i][0] == 'G' && lines[i][1] == 'O' && lines[i][2] == 'T' && lines[i][3] == 'O' && lines[i][4] == ' ') // go to line
         {
             std::string defCopy = "";

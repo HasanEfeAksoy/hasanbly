@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v9</b>
+<b>v10</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -14,7 +14,7 @@ if you want devoloping this project you can compile like this:
 <br>
 Download hsnc.exe (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
 <br>
-<p>Hasanbly is open source, non memory safe (for now) and non parser basic scripting language created with C++.
+<p>Hasanbly is open source, non parser basic scripting language created with C++.
 <br>
 It is just <i>interprete</i> and run your codes easily.</p>
 
@@ -157,7 +157,9 @@ EXIT;
 <li>
   <h4>M</h4>
   <br>
-  <p>You can using math operators like = + - * / %. But you have to using variables. You can convert type of variables with use M= command.
+  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl0_ $:dbl1_;) note(for double variables), M.ABS, M.POW, M.SQRT.
+  <br>
+  But you have to using variables. You can convert type of variables with use M= command.
   <br>
   <br>
   <i>

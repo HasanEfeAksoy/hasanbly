@@ -11,29 +11,24 @@
 
 
 void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec);
-int main(int argc, char *argv[])
-{
-    if (!argv[1])
-    {
+int main(int argc, char *argv[]) {
+    if (!argv[1]) {
         std::cout << "\nERROR:\nmessage: no input file.\n";
         return 0;
     }
 
     const std::string input = argv[1]; // hsnc.exe main.hsnc yazıldığı zaman main.hsnc yi alacak
-    if (input.size() > 4 && input[input.size() - 4] == '.' && input[input.size() - 3] == 'h' && input[input.size() - 2] == 's' && input[input.size() - 1] == 'n')
-    {
+    if (input.size() > 4 && input[input.size() - 4] == '.' && input[input.size() - 3] == 'h' && input[input.size() - 2] == 's' && input[input.size() - 1] == 'n') {
         std::string text = "";          // dosyanın tüm içeriği
         std::vector<std::string> lines; // dosyadaki tüm satırlar
         std::string newText = "";
         std::ifstream file(input);
-        if (!file)
-        {
+        if (!file) {
             std::cout << "\nERROR:\nmessage: input file don't exist.\n";
             return 0;
         }
 
-        while (std::getline(file, newText))
-        {
+        while (std::getline(file, newText)) {
             text += newText + "\n";
             lines.push_back(newText);
         }
@@ -46,14 +41,12 @@ int main(int argc, char *argv[])
         
         run(text, lines, unInterpreteLines, stringVec, intVec, doubleVec);
     }
-    else
-    {
+    else {
         std::cout << "\nERROR:\nmessage: wrong input file type.\n";
         return 0;
     }
 }
-void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec)
-{
+void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec) {
     // unInterprete vectorune başlangıç değer ataması
     for (int i = 0; i < lines.size(); i++) {
         unInterpreteLines.push_back(false);
@@ -62,11 +55,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
     // yorum satırlarını ve boş satırları vectore atama
     // sol boşluk silme
-    for (int i = 0; i < lines.size(); i++)
-    {
+    for (int i = 0; i < lines.size(); i++) {
         for (int j = 0; j < lines[i].size(); j++) {
-            if (lines[i][j] == ' ' || lines[i][j] == '\t') // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
-            {
+            if (lines[i][j] == ' ' || lines[i][j] == '\t') { // her satırın her harfini 2 for ile dolaşıp başlarında boşluk olmayana kadar yani her satırın sol tarafındaki boşlukları siliyoruz.
                 lines[i].erase(lines[i].begin()); // begin() e +j yapmaya gerek yok çünkü spesifik eleman silmiyoruz. hep baştaki boşluk harfini siliyoruz.
                 j--;
             }
@@ -106,8 +97,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             continue;
         }
         
-        if (lines[i][lines[i].size() - 1] != ';') // satırın ; ile bitip bitmediğini kontrol ediyoruz.
-        {
+        if (lines[i][lines[i].size() - 1] != ';') { // satırın ; ile bitip bitmediğini kontrol ediyoruz.
             std::cout << "\nERROR:\nmessage: missing semicolon. line:" << std::to_string(i + 1) << "\n";
             exit(0);
         }
@@ -144,20 +134,17 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
         }
 
 
-        if (lines[i][0] == '<') // print etmek için ilk harf ne onu kontrol ediyoruz. yukarda zaten soldaki boşlukları siliğimiz için ilk harf diye kontrol edebiliriz.
-        {
+        if (lines[i][0] == '<') { // print etmek için ilk harf ne onu kontrol ediyoruz. yukarda zaten soldaki boşlukları siliğimiz için ilk harf diye kontrol edebiliriz.
             std::string myLine = lines[i];
 
-            for (int j = 0; j < myLine.size(); j++) // her satırın her harfini geziyoruz 2 for döngüsü ile.
-            {
+            for (int j = 0; j < myLine.size(); j++) { // her satırın her harfini geziyoruz 2 for döngüsü ile.
                 // sadece $ (dolar simgesi) yazdırmak istersek yani ^ bundan sonraki ilk karakter göz ardı edilecek ve yazılacak.
                 if (myLine[j] == '^') {
                     myLine.erase(myLine.begin() + j);
                     //j++; //erase ettiğimiz için j yi arttırmaya gerek kalmadı.
                     continue;
                 }
-                else if (myLine[j] == '$') //$ işareti buluyoruz
-                {
+                else if (myLine[j] == '$') { //$ işareti buluyoruz
                     std::string num = "";
                     int controller = 1;                     // değişkenikarşılığı ile değiştireceğimiz için (replace) kaç karakter olduğunu hesaplıyoruz. $ bu bir _ bu da bir ve bunların arasındaki sayının kaç harften oluştuğunun toplamı
                     
@@ -202,21 +189,18 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
             } //->değişkenlerin değerlerini metinde yerleştiriyoruz-----
 
-            if (myLine[1] == '<') // 2 tane yazdı mı kontrol ediyoruz sonuna \n eklemek için
-            {
+            if (myLine[1] == '<') { // 2 tane yazdı mı kontrol ediyoruz sonuna \n eklemek için
                 myLine.erase(myLine.begin()); // ilk harfi siliyoruz yani < bunu
                 myLine.erase(myLine.begin()); // ikinci harfi siliyoruz yani < bunu. begin() ilk harfi belirtiyor o yüzden ilk silişimizde ikinci harf birinci harf oldu bu nedennle +1 yapmıyoruz.
 
                 std::cout << myLine + "\n"; // satırı + \n yazıyoruz.
             }
-            else
-            {
+            else {
                 myLine.erase(myLine.begin()); // ikinci harfi siliyoruz yani < bunu. begin() ilk harfi belirtiyor o yüzden ilk silişimizde ikinci harf birinci harf oldu bu nedennle +1 yapmıyoruz.
                 std::cout << myLine;          // satırı yazıyoruz
             }
         }
-        else if (lines[i][0] == '>') // input aldırmak için
-        {
+        else if (lines[i][0] == '>') { // input aldırmak için
             if (lines[i][1] != '$' || lines[i][lines[i].size() - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: > command need a variable. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
@@ -249,8 +233,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
 
             // $ içinde verilen indexe ulaşma.
-            for (int j = 6; j < lines[i].size() - 1; j++)
-            {
+            for (int j = 6; j < lines[i].size() - 1; j++) {
                 defnumCopy += lines[i][j];
             }
             
@@ -264,27 +247,23 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 doubleVec[std::stoi(defnumCopy)] = std::stod(in);
             }
         }
-        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'F' && lines[i][3] == ':') // değişken tanımlamak için DEF isim gibi bir şey yazabilmek için
-        {
+        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'F' && lines[i][3] == ':') { // değişken tanımlamak için DEF isim gibi bir şey yazabilmek için
             std::string defined = "";
 
             if (lines[i][4] == 's' && lines[i][5] == 't' && lines[i][6] == 'r' && lines[i][7] == ' ') {
-                for (int j = 8; j < lines[i].size(); j++) // 8 den başlıyoruz çünkü 'DEF:str ' [8]
-                {
+                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:str ' [8]
                     defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
                 }
                 stringVec.push_back(defined); // vectore kaydediyoruz.
             }
             else if (lines[i][4] == 'i' && lines[i][5] == 'n' && lines[i][6] == 't' && lines[i][7] == ' ') {            
-                for (int j = 8; j < lines[i].size(); j++) // 8 den başlıyoruz çünkü 'DEF:int ' [8]
-                {
+                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:int ' [8]
                     defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
                 }
                 intVec.push_back(std::stoi(defined)); // vectore kaydediyoruz.
             }
             else if (lines[i][4] == 'd' && lines[i][5] == 'b' && lines[i][6] == 'l' && lines[i][7] == ' ') {            
-                for (int j = 8; j < lines[i].size(); j++) // 8 den başlıyoruz çünkü 'DEF:dbl ' [8]
-                {
+                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:dbl ' [8]
                     defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
                 }
                 doubleVec.push_back(std::stod(defined)); // vectore kaydediyoruz.
@@ -294,8 +273,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 exit(0);
             }            
         }
-        else if (lines[i][0] == 'M')
-        {
+        else if (lines[i][0] == 'M') {
             std::string defCopy = "";
             std::string secondCopy = "";
             bool changeSaveDeftoSecondCopy = false;
@@ -327,16 +305,12 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             // oluşuyor M harfi ile 4 karakter. 0, 1, 2, 3. indexler yazılı 4. index boşluk karakteri
             // 3 + 1 demek boşluk karakterini almak demek ama biz ondan sonrasını istiyoruz yani $ karakterini bu yüzden +2.
             // ama biz kontrolü yukardaki if ile yaptığımız için +3 (direkt sayıyı alıyoruz)
-            for (int j = process.size() + 3; j < lines[i].size(); j++)
-            {
-                if (lines[i][j] == '_')
-                {
-                    if (changeSaveDeftoSecondCopy)
-                    {
+            for (int j = process.size() + 3; j < lines[i].size(); j++) {
+                if (lines[i][j] == '_') {
+                    if (changeSaveDeftoSecondCopy) {
                         break;
                     }
-                    else
-                    {
+                    else {
                         changeSaveDeftoSecondCopy = true;
                         if (lines[i][j + 1] == ' ' && lines[i][j + 2] == '$') {
                             j += 2;
@@ -347,10 +321,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         }
                     }
                 }
-                else
-                {
-                    if (changeSaveDeftoSecondCopy)
-                    {
+                else {
+                    if (changeSaveDeftoSecondCopy) {
                         if (!secondCalculated) {
                             if (lines[i][j] == ':') {
                                 if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r') {
@@ -383,8 +355,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         }
 
                     }
-                    else
-                    {
+                    else {
                         if (!firstCalculated) {
                             if (lines[i][j] == ':') {
                                 if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r') {
@@ -420,8 +391,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
 
 
-            if (process == "=")
-            {
+            if (process == "=") {
                 // 1. str str
                 // 2. str int
                 // 3. str dbl
@@ -445,8 +415,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     exit(0);
                 }
             }
-            else if (process == "+")
-            {
+            else if (process == "+") {
                 // 1. str str
                 // 2. str int
                 // 3. str dbl
@@ -470,8 +439,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     exit(0);
                 }
             }
-            else if (process == "-")
-            {
+            else if (process == "-") {
                 // 1. int int
                 // 2. int dbl
                 // 3. dbl int
@@ -486,8 +454,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
 
             }
-            else if (process == "*")
-            {
+            else if (process == "*") {
                 // 1. int int
                 // 2. int dbl
                 // 3. dbl int
@@ -501,8 +468,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     exit(0);
                 }
             }
-            else if (process == "/")
-            {
+            else if (process == "/") {
                 // 1. int int
                 // 2. int dbl
                 // 3. dbl int
@@ -516,8 +482,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     exit(0);
                 }
             }
-            else if (process == "%")
-            {
+            else if (process == "%") {
                 // 1. int int
                 // 2. int dbl
                 if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] %= intVec[std::stoi(secondCopy)];
@@ -631,21 +596,17 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             
 
-            else
-            {
+            else {
                 std::cout << "\nERROR:\nmessage: false math operator. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
         }
         
 
-        else if (lines[i][0] == 'G' && lines[i][1] == 'O' && lines[i][2] == 'T' && lines[i][3] == 'O' && lines[i][4] == ' ') // go to line
-        {
+        else if (lines[i][0] == 'G' && lines[i][1] == 'O' && lines[i][2] == 'T' && lines[i][3] == 'O' && lines[i][4] == ' ') { // go to line
             std::string defCopy = "";
-            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][lines[i].size() - 1] == '_') // değişken verilirse onun değeri sayı verilirse direkt sayı
-            {
-                for (int j = 10; j < lines[i].size() - 1; j++)
-                {
+            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][lines[i].size() - 1] == '_') { // değişken verilirse onun değeri sayı verilirse direkt sayı
+                for (int j = 10; j < lines[i].size() - 1; j++) {
                     defCopy += lines[i][j];
                 }
                 defCopy = std::to_string(intVec[std::stoi(defCopy)]);
@@ -655,13 +616,11 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
             }
             else if (std::stoi(std::to_string(lines[i][5])) % 1 == 0) { //tam sayı mı kontrol
-                for (int j = 5; j < lines[i].size(); j++)
-                {
+                for (int j = 5; j < lines[i].size(); j++) {
                     defCopy += lines[i][j];
                 }
             }
-            else
-            {
+            else {
                 std::cout << "\nERROR:\nmessage: You have to using integer number or as variable while using GOTO. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
@@ -675,14 +634,12 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             i = integerNumberOfLineNumber - 2; //go to i. satır
             continue;
         }
-        else if (lines[i][0] == 'E' && lines[i][1] == 'X' && lines[i][2] == 'I' && lines[i][3] == 'T' && lines[i].size() == 4) // stop program
-        {
+        else if (lines[i][0] == 'E' && lines[i][1] == 'X' && lines[i][2] == 'I' && lines[i][3] == 'T' && lines[i].size() == 4) { // stop program
             exit(0);
         }
 
 
-        else if (lines[i][0] == 'I' && lines[i][1] == 'F') // if condition
-        {
+        else if (lines[i][0] == 'I' && lines[i][1] == 'F') { // if condition
             std::string defFirst = ""; // first state
             std::string defSecond = ""; // second state
             std::string defThird = ""; // third state
@@ -715,7 +672,6 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
                 // have to second variable is string
                 if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':' && lines[i][whereFirstEnded + 3] == 's' && lines[i][whereFirstEnded + 4] == 't' && lines[i][whereFirstEnded + 5] == 'r') {
-                    
                     
                     for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
                         if (lines[i][j] != '_') {

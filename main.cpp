@@ -11,7 +11,7 @@
 
 
 void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec);
-int main(int argc, char *argv[]) {
+int main(int argc, char** argv) {
     if (!argv[1]) {
         std::cout << "\nERROR:\nmessage: no input file.\n";
         return 0;

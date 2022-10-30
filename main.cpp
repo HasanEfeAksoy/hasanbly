@@ -816,7 +816,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 
                 if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':') {
-                    if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't' && lines[i][whereFirstEnded + 6] == '=') {
+                    if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't' && lines[i][whereFirstEnded + 6] == ':') {
                         for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                             if (lines[i][j] != '_') {
                                 varNameSecond += lines[i][j];

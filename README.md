@@ -260,7 +260,7 @@ EXIT;
   <i>
   DEF:int:number=0;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
   INC $:int:number_;
   <br>

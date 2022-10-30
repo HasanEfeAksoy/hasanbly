@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v10</b>
+<b>v11</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -12,7 +12,7 @@ if you want devoloping this project you can compile like this:
 <br>
 <h1>Get Started</h1>
 <br>
-Download hsnc.exe (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command.
+Download hsnc.exe (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command. (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
 <br>
 <p>Hasanbly is open source, non parser basic scripting language created with C++.
 <br>
@@ -64,21 +64,21 @@ EXIT;
 <li>
   <h4>DEF</h4>
   <br>
-  <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl). To use the variable, you must know the order of the variable.
+  <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl).
   <br>
   <br>
   <i>
-  DEF:str empty;
+  DEF:str:name=empty;
   <br>
-  &lt&lt$:str0_;
+  &lt&lt$:str:name_;
   <br>
-  DEF:int 15;
+  DEF:int:number=15;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
-  DEF:dbl 4.5;
+  DEF:dbl:myDouble=4.5;
   <br>
-  &lt&lt$:dbl0_;
+  &lt&lt$:dbl:myDouble_;
   <br>
   EXIT;
   </i>
@@ -136,13 +136,13 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:str noname;
+  DEF:str:text=noname;
   <br>
   // entered 'hasanbly'
   <br>
-  &gt$:str0_;
+  &gt$:str:text_;
   <br>
-  &lt&lt$:str0_;
+  &lt&lt$:str:text_;
   <br>
   EXIT;
   </i>
@@ -157,21 +157,21 @@ EXIT;
 <li>
   <h4>M</h4>
   <br>
-  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl0_ $:dbl1_;) note(for double variables), M.ABS, M.POW, M.SQRT.
+  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl:myNum1_ $:dbl:myNum2_;) note(for double variables), M.ABS, M.POW, M.SQRT.
   <br>
   But you have to using variables. You can convert type of variables with use M= command.
   <br>
   <br>
   <i>
-  DEF:int 0;
+  DEF:int:first=0;
   <br>
-  DEF:int 1;
+  DEF:int:second=1;
   <br>  
-  // $:int0_ = $:int1_
+  // $:int:first_ = $:int:second_
   <br>
-  M= $:int0_ $:int1_;
+  M= $:int:first_ $:int:second_;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:first_;
   <br>
   EXIT;
   </i>
@@ -198,11 +198,11 @@ EXIT;
   // or
   <br>
   <br>
-  //DEF:int 2;
+  //DEF:int:line:2;
   <br>
   //&ltHi;
   <br>
-  //GOTO $:int0_;
+  //GOTO $:int:line_;
   <br>
   EXIT;
   </i>
@@ -227,9 +227,9 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:int 0;
+  DEF:int:num1=0;
   <br>
-  DEF:int 0;
+  DEF:int:num2=0;
   <br>
   // if 0 == 0
   <br>
@@ -237,7 +237,7 @@ EXIT;
   <br>
   // but if you put != the interpreter goes to line 8.
   <br>
-  IF== $:int0_ $:int1_ ELSE:8;
+  IF== $:int:num1_ $:int:num2_ ELSE:8;
   <br>
   &lt&ltHello everyone;
   <br>
@@ -258,13 +258,13 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:int 0;
+  DEF:int:number=0;
   <br>
   &lt&lt$:int0_;
   <br>
-  INC $:int0_;
+  INC $:int:number_;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
   EXIT;
   </i>
@@ -283,13 +283,13 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:int 1;
+  DEF:int:number=1;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
-  DEC $:int0_;
+  DEC $:int:number_;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
   EXIT;
   </i>
@@ -314,13 +314,13 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:int 1;
+  DEF:int:number=1;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
-  NULL $:int0_;
+  NULL $:int:number_;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:number_;
   <br>
   EXIT;
   </i>
@@ -339,19 +339,19 @@ EXIT;
   <br>
   <br>
   <i>
-  DEF:int 5;
+  DEF:int:myAwasomeNumber=5;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:myAwesomeNumber_;
   <br>
-  FREE $:int0_;
+  FREE $:int:myAwesomeNumber_;
   <br>
-  &lt&lt$:int0_;
+  &lt&lt$:int:myAwesomeNumber_;
   <br>
   EXIT;
   </i>
   <br>
   <br>
-  output: <i>5<br>0</i>
+  output: <i>5<br>ERROR</i>
   </p>
 </li>
 

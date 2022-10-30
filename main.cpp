@@ -1,8 +1,9 @@
 #include <iostream>
+//#include <stdlib.h>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <math.h>
-//#include <stdlib.h>
 #include <fstream>
 #include <algorithm>
 
@@ -10,7 +11,7 @@
 #define PI 3.14159265
 
 
-void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec);
+void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables);
 int main(int argc, char** argv) {
     if (!argv[1]) {
         std::cout << "\nERROR:\nmessage: no input file.\n";
@@ -34,26 +35,27 @@ int main(int argc, char** argv) {
         }
         file.close();
 
-        std::vector<bool> unInterpreteLines; // comment and empty lines (if interpretable false, if uninterpretable true)
-        std::vector<std::string> stringVec; // değişkenleri tanımladığımız zaman depolanacak vector
-        std::vector<int> intVec; // int vectoru
-        std::vector<double> doubleVec; // double vectoru
+        //std::vector<bool> unInterpreteLines; // comment and empty lines (if interpretable false, if uninterpretable true)
+        bool* unInterpreteLines = new bool[lines.size()];
+        std::unordered_map<std::string, std::string> stringVariables; // string unordered_mapi
+        std::unordered_map<std::string, int> intVariables; // int unordered_mapi
+        std::unordered_map<std::string, double> doubleVariables; // double unordered_mapi
         
-        run(text, lines, unInterpreteLines, stringVec, intVec, doubleVec);
+        interprete(text, lines, unInterpreteLines, stringVariables, intVariables, doubleVariables);
     }
     else {
         std::cout << "\nERROR:\nmessage: wrong input file type.\n";
         return 0;
     }
 }
-void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& unInterpreteLines, std::vector<std::string>& stringVec, std::vector<int>& intVec, std::vector<double>& doubleVec) {
-    // unInterprete vectorune başlangıç değer ataması
+void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables) {
+    // unInterprete listine başlangıç değer ataması
     for (int i = 0; i < lines.size(); i++) {
-        unInterpreteLines.push_back(false);
+        unInterpreteLines[i] = false;
     }
 
 
-    // yorum satırlarını ve boş satırları vectore atama
+    // yorum satırlarını ve boş satırları unInterpreteLines a atama
     // sol boşluk silme
     for (int i = 0; i < lines.size(); i++) {
         for (int j = 0; j < lines[i].size(); j++) {
@@ -126,9 +128,15 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
     
 
-
+    /*
+        MAIN FOR LOOP
+    */
     for (int i = 0; i < lines.size(); i++)
     {
+        // her yerde çağırmak yerine birkere yazalım
+        size_t line_i_size = lines[i].size();
+
+     
         if (unInterpreteLines[i]) { // uninterprete olan (comment lines and empty lines) satırlar varsa geçmek
             continue;
         }
@@ -145,45 +153,45 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     continue;
                 }
                 else if (myLine[j] == '$') { //$ işareti buluyoruz
-                    std::string num = "";
-                    int controller = 1;                     // değişkenikarşılığı ile değiştireceğimiz için (replace) kaç karakter olduğunu hesaplıyoruz. $ bu bir _ bu da bir ve bunların arasındaki sayının kaç harften oluştuğunun toplamı
+                    std::string varName = "";
+                    int controller = 1;
                     
 
                     if (myLine[j + controller] == ':') {
-                        if (myLine[j + controller + 1] == 's' && myLine[j + controller + 2] == 't' && myLine[j + controller + 3] == 'r') { // if string
-                            controller += 4;
+                        if (myLine[j + controller + 1] == 's' && myLine[j + controller + 2] == 't' && myLine[j + controller + 3] == 'r' && myLine[j + controller + 4] == ':') { // if string
+                            controller += 5;
                             while (myLine[j + controller] != '_') {
-                                num += myLine[j + controller];
+                                varName += myLine[j + controller];
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, stringVec[std::stoi(num)]); // r bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz string vectorunden alacağımız string değeri gösterir. burada "2" şu şekilde bir stringi inte çevirip yani 2 ye çavirip sonra vectorde karşılığını bulduk.      
+                            myLine.replace(j, controller, stringVariables.at(varName)); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız string değeri gösterir.
                         }
-                        else if (myLine[j + controller + 1] == 'i' && myLine[j + controller + 2] == 'n' && myLine[j + controller + 3] == 't') { // if int
-                            controller += 4;
+                        else if (myLine[j + controller + 1] == 'i' && myLine[j + controller + 2] == 'n' && myLine[j + controller + 3] == 't' && myLine[j + controller + 4] == ':') { // if int
+                            controller += 5;
                             while (myLine[j + controller] != '_') {
-                                num += myLine[j + controller];
+                                varName += myLine[j + controller];
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, std::to_string(intVec[std::stoi(num)])); // r bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz int vectorundan alacağımız string değeri gösterir..      
+                            myLine.replace(j, controller, std::to_string(intVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız int değeri gösterir.
                         }
-                        else if (myLine[j + controller + 1] == 'd' && myLine[j + controller + 2] == 'b' && myLine[j + controller + 3] == 'l') { // if double
-                            controller += 4;
+                        else if (myLine[j + controller + 1] == 'd' && myLine[j + controller + 2] == 'b' && myLine[j + controller + 3] == 'l' && myLine[j + controller + 4] == ':') { // if double
+                            controller += 5;
                             while (myLine[j + controller] != '_') {
-                                num += myLine[j + controller];
+                                varName += myLine[j + controller];
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, std::to_string(doubleVec[std::stod(num)])); // r bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz int vectorundan alacağımız string değeri gösterir..      
+                            myLine.replace(j, controller, std::to_string(doubleVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız double değeri gösterir.
                         }
                         else {
-                            std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: need ':' to call variable. line:" << std::to_string(i + 1) << "\n";
+                        std::cout << "\nERROR:\nmessage: need '$:type:varName_' to call variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
                         exit(0);
                     }
                 }
@@ -193,7 +201,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 myLine.erase(myLine.begin()); // ilk harfi siliyoruz yani < bunu
                 myLine.erase(myLine.begin()); // ikinci harfi siliyoruz yani < bunu. begin() ilk harfi belirtiyor o yüzden ilk silişimizde ikinci harf birinci harf oldu bu nedennle +1 yapmıyoruz.
 
-                std::cout << myLine + "\n"; // satırı + \n yazıyoruz.
+                std::cout << myLine << '\n'; // satırı + \n yazıyoruz.
             }
             else {
                 myLine.erase(myLine.begin()); // ikinci harfi siliyoruz yani < bunu. begin() ilk harfi belirtiyor o yüzden ilk silişimizde ikinci harf birinci harf oldu bu nedennle +1 yapmıyoruz.
@@ -201,82 +209,161 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
         }
         else if (lines[i][0] == '>') { // input aldırmak için
-            if (lines[i][1] != '$' || lines[i][lines[i].size() - 1] != '_') {
+            if (lines[i][1] != '$' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: > command need a variable. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
             std::string in = "";
             std::getline(std::cin, in); // in değerine inputu atıyoruz.
-            std::string defnumCopy = "";
 
             int type = 0;
 
             if (lines[i][2] == ':') {
-                if (lines[i][3] == 's' && lines[i][4] == 't' && lines[i][5] == 'r') {
+                if (lines[i][3] == 's' && lines[i][4] == 't' && lines[i][5] == 'r' && lines[i][6] == ':') {
                     type = 0;
                 }
-                else if (lines[i][3] == 'i' && lines[i][4] == 'n' && lines[i][5] == 't') {
+                else if (lines[i][3] == 'i' && lines[i][4] == 'n' && lines[i][5] == 't' && lines[i][6] == ':') {
                     type = 1;
                 }
-                else if (lines[i][3] == 'd' && lines[i][4] == 'b' && lines[i][5] == 'l') {
+                else if (lines[i][3] == 'd' && lines[i][4] == 'b' && lines[i][5] == 'l' && lines[i][6] == ':') {
                     type = 2;
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
             else {
-                std::cout << "\nERROR:\nmessage: need ':' to call variable. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: need '$:type:varName_' to call variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
+            std::string varName = "";
+
             // $ içinde verilen indexe ulaşma.
-            for (int j = 6; j < lines[i].size() - 1; j++) {
-                defnumCopy += lines[i][j];
+            for (int j = 7; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
             }
             
             if (type == 0) {
-                stringVec[std::stoi(defnumCopy)] = in;
+                stringVariables.at(varName) = in;
             }
             else if (type == 1) {
-                intVec[std::stoi(defnumCopy)] = std::stoi(in);
+                intVariables.at(varName) = std::stoi(in);
             }
             else if (type == 2) {
-                doubleVec[std::stoi(defnumCopy)] = std::stod(in);
+                doubleVariables.at(varName) = std::stod(in);
             }
         }
-        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'F' && lines[i][3] == ':') { // değişken tanımlamak için DEF isim gibi bir şey yazabilmek için
-            std::string defined = "";
+        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'F' && lines[i][3] == ':') { // değişken tanımlamak için DEF:int:count=12;
+            std::string name = "";
+            std::string value = "";
 
-            if (lines[i][4] == 's' && lines[i][5] == 't' && lines[i][6] == 'r' && lines[i][7] == ' ') {
-                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:str ' [8]
-                    defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
+            bool isReadedName = false;
+
+            if (lines[i][4] == 's' && lines[i][5] == 't' && lines[i][6] == 'r' && lines[i][7] == ':') {
+                for (int j = 8; j < line_i_size; j++) {
+                    if (isReadedName) {
+                        value += lines[i][j];
+                    }
+                    else {
+                        if (lines[i][j] != '=') {
+                            if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
+                                std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            else {
+                                name += lines[i][j];
+                            }
+                        }
+                        else {
+                            isReadedName = true;
+                        }
+                    }
                 }
-                stringVec.push_back(defined); // vectore kaydediyoruz.
+                
+                try {
+                    stringVariables.at(name);
+                    // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
+                    std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                catch(const std::exception& e) {
+                    stringVariables.insert(std::pair<std::string, std::string>(name, value));
+                }                
             }
-            else if (lines[i][4] == 'i' && lines[i][5] == 'n' && lines[i][6] == 't' && lines[i][7] == ' ') {            
-                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:int ' [8]
-                    defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
+            else if (lines[i][4] == 'i' && lines[i][5] == 'n' && lines[i][6] == 't' && lines[i][7] == ':') {            
+                for (int j = 8; j < line_i_size; j++) {
+                    if (isReadedName) {
+                        value += lines[i][j];
+                    }
+                    else {
+                        if (lines[i][j] != '=') {
+                            if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
+                                std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            else {
+                                name += lines[i][j];
+                            }
+                        }
+                        else {
+                            isReadedName = true;
+                        }
+                    }
                 }
-                intVec.push_back(std::stoi(defined)); // vectore kaydediyoruz.
+
+                try {
+                    intVariables.at(name);
+                    // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
+                    std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                catch(const std::exception& e) {
+                    intVariables.insert(std::pair<std::string, int>(name, std::stoi(value)));
+                }
             }
-            else if (lines[i][4] == 'd' && lines[i][5] == 'b' && lines[i][6] == 'l' && lines[i][7] == ' ') {            
-                for (int j = 8; j < lines[i].size(); j++) { // 8 den başlıyoruz çünkü 'DEF:dbl ' [8]
-                    defined += lines[i][j]; // karşılaştığımız harfi defined içine ekliyoruz.
+            else if (lines[i][4] == 'd' && lines[i][5] == 'b' && lines[i][6] == 'l' && lines[i][7] == ':') {            
+                for (int j = 8; j < line_i_size; j++) {
+                    if (isReadedName) {
+                        value += lines[i][j];
+                    }
+                    else {
+                        if (lines[i][j] != '=') {
+                            if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
+                                std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            else {
+                                name += lines[i][j];
+                            }
+                        }
+                        else {
+                            isReadedName = true;
+                        }
+                    }
                 }
-                doubleVec.push_back(std::stod(defined)); // vectore kaydediyoruz.
+
+                try {
+                    doubleVariables.at(name);
+                    // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
+                    std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                catch(const std::exception& e) {
+                    doubleVariables.insert(std::pair<std::string, double>(name, std::stod(value)));
+                }
             }
             else {
-                std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you define it. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you define it. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }            
         }
         else if (lines[i][0] == 'M') {
-            std::string defCopy = "";
-            std::string secondCopy = "";
-            bool changeSaveDeftoSecondCopy = false;
+            std::string varNameFirst = "";
+            std::string varNameSecond = "";
+            bool change = false;
 
             int typeFirst = 0;
             int typeSecond = 0;
@@ -286,32 +373,34 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
             std::string process = "";
             
-            for (int j = 1; j < lines[i].size(); j++) {
+            // ne işlemi olduğunu kaydediyoruz
+            for (int j = 1; j < line_i_size; j++) {
                 if (lines[i][j] != ' ')
                     process += lines[i][j];
                 else
                     break;
             }
-            // ne işlemi olduğunu kaydediyoruz
+
+            int processSize = process.size();
 
 
-            if (lines[i][process.size() + 1] != ' ' || lines[i][process.size() + 2] != '$') {
+            if (lines[i][processSize + 1] != ' ' || lines[i][processSize + 2] != '$') {
                 std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
             // $ içinde verilen indexe ulaşma.
-            // process.size() + 2 nedeni şu: örneğin MSIN $:int0_ $:int1_; dedi, SIN 3 karakterden
+            // processSize + 2 nedeni şu: örneğin MSIN $:int:num1_ $:int:num2_; dedi, SIN 3 karakterden
             // oluşuyor M harfi ile 4 karakter. 0, 1, 2, 3. indexler yazılı 4. index boşluk karakteri
             // 3 + 1 demek boşluk karakterini almak demek ama biz ondan sonrasını istiyoruz yani $ karakterini bu yüzden +2.
-            // ama biz kontrolü yukardaki if ile yaptığımız için +3 (direkt sayıyı alıyoruz)
-            for (int j = process.size() + 3; j < lines[i].size(); j++) {
+            // ama biz $ kontrolünü yukardaki if ile yaptığımız için +3 (direkt : a atlıyoruz)
+            for (int j = processSize + 3; j < line_i_size; j++) {
                 if (lines[i][j] == '_') {
-                    if (changeSaveDeftoSecondCopy) {
+                    if (change) {
                         break;
                     }
                     else {
-                        changeSaveDeftoSecondCopy = true;
+                        change = true;
                         if (lines[i][j + 1] == ' ' && lines[i][j + 2] == '$') {
                             j += 2;
                         }
@@ -322,73 +411,97 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                     }
                 }
                 else {
-                    if (changeSaveDeftoSecondCopy) {
+                    if (change) {
                         if (!secondCalculated) {
                             if (lines[i][j] == ':') {
-                                if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r') {
+                                if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r' && lines[i][j + 4] == ':') {
                                     typeSecond = 0;
                                     secondCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:str) 4 char.
+                                    j += 4;
                                 }
-                                else if (lines[i][j + 1] == 'i' && lines[i][j + 2] == 'n' && lines[i][j + 3] == 't') {
+                                else if (lines[i][j + 1] == 'i' && lines[i][j + 2] == 'n' && lines[i][j + 3] == 't' && lines[i][j + 4] == ':') {
                                     typeSecond = 1;
                                     secondCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:int) 4 char.
+                                    j += 4;
                                 }
-                                else if (lines[i][j + 1] == 'd' && lines[i][j + 2] == 'b' && lines[i][j + 3] == 'l') {
+                                else if (lines[i][j + 1] == 'd' && lines[i][j + 2] == 'b' && lines[i][j + 3] == 'l' && lines[i][j + 4] == ':') {
                                     typeSecond = 2;
                                     secondCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerirdi. (:dbl) 4 char.
+                                    j += 4;
                                 }
                                 else {
-                                    std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
+                                    std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
                                     exit(0);
                                 }
                             }
                             else {
-                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable. line:" << std::to_string(i + 1) << "\n";
+                                std::cout << "\nERROR:\nmessage: need '$:type:varName_' for type when you using a variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
                                 exit(0);
                             }
                         }
                         else {
-                            secondCopy += lines[i][j];
+                            varNameSecond += lines[i][j];
                         }
 
                     }
                     else {
                         if (!firstCalculated) {
                             if (lines[i][j] == ':') {
-                                if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r') {
+                                if (lines[i][j + 1] == 's' && lines[i][j + 2] == 't' && lines[i][j + 3] == 'r' && lines[i][j + 4] == ':') {
                                     typeFirst = 0;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:str) 4 char.
+                                    j += 4;
                                 }
-                                else if (lines[i][j + 1] == 'i' && lines[i][j + 2] == 'n' && lines[i][j + 3] == 't') {
+                                else if (lines[i][j + 1] == 'i' && lines[i][j + 2] == 'n' && lines[i][j + 3] == 't' && lines[i][j + 4] == ':') {
                                     typeFirst = 1;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:int) 4 char.
+                                    j += 4;
                                 }
-                                else if (lines[i][j + 1] == 'd' && lines[i][j + 2] == 'b' && lines[i][j + 3] == 'l') {
+                                else if (lines[i][j + 1] == 'd' && lines[i][j + 2] == 'b' && lines[i][j + 3] == 'l' && lines[i][j + 4] == ':') {
                                     typeFirst = 2;
                                     firstCalculated = true;
-                                    j += 3; // for başında j artacağı için 3 yaptık yoksa 4 yapmamız gerekirdi. (:dbl) 4 char.
+                                    j += 4;
                                 }
                                 else {
-                                    std::cout << "\nERROR:\nmessage: need :str or :int or :dbl type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
+                                    std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
                                     exit(0);
                                 }
                             }
                             else {
-                                std::cout << "\nERROR:\nmessage: need : for type when you using a variable. line:" << std::to_string(i + 1) << "\n";
+                                std::cout << "\nERROR:\nmessage: need '$:type:varName_' for type when you using a variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
                                 exit(0);
                             }
                         }
                         else {
-                            defCopy += lines[i][j];
+                            varNameFirst += lines[i][j];
                         }
                     }
                 }
             }
+
+            // ...variable.at(varNameFirst) gibi girmekten kurtulmak için adresi ile işlem yapmak            
+            std::string* str1 = nullptr;
+            int* int1 = nullptr;
+            double* double1 = nullptr;
+
+            std::string* str2 = nullptr;
+            int* int2 = nullptr;
+            double* double2 = nullptr;
+
+            if (typeFirst == 0)
+                str1 = &stringVariables.at(varNameFirst);
+            else if (typeFirst == 1)
+                int1 = &intVariables.at(varNameFirst);
+            else if (typeFirst == 2)
+                double1 = &doubleVariables.at(varNameFirst);
+
+            if (typeSecond == 0)
+                str2 = &stringVariables.at(varNameSecond);
+            else if (typeSecond == 1)
+                int2 = &intVariables.at(varNameSecond);
+            else if (typeSecond == 2)
+                double2 = &doubleVariables.at(varNameSecond);
+
 
 
             if (process == "=") {
@@ -401,15 +514,15 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 7. dbl str
                 // 8. dbl int
                 // 9. dbl dbl
-                if (typeFirst == 0 && typeSecond == 0) stringVec[std::stoi(defCopy)] = stringVec[std::stoi(secondCopy)];
-                else if (typeFirst == 0 && typeSecond == 1) stringVec[std::stoi(defCopy)] = std::to_string(intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 0 && typeSecond == 2) stringVec[std::stoi(defCopy)] = std::to_string(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 0) intVec[std::stoi(defCopy)] = std::stoi(stringVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 0) doubleVec[std::stoi(defCopy)] = std::stod(stringVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = 0.0 + intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = doubleVec[std::stoi(secondCopy)];
+                if (typeFirst == 0 && typeSecond == 0) *str1 = *str2;
+                else if (typeFirst == 0 && typeSecond == 1) *str1 = std::to_string(*int2);
+                else if (typeFirst == 0 && typeSecond == 2) *str1 = std::to_string(*double2);
+                else if (typeFirst == 1 && typeSecond == 0) *int1 = std::stoi(*str2);
+                else if (typeFirst == 1 && typeSecond == 1) *int1 = *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(*double2);
+                else if (typeFirst == 2 && typeSecond == 0) *double1 = std::stod(*str2);
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = 0.0 + *int2;
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M=. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -425,15 +538,15 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 7. dbl str
                 // 8. dbl int
                 // 9. dbl dbl
-                if (typeFirst == 0 && typeSecond == 0) stringVec[std::stoi(defCopy)] += stringVec[std::stoi(secondCopy)];
-                else if (typeFirst == 0 && typeSecond == 1) stringVec[std::stoi(defCopy)] += std::to_string(intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 0 && typeSecond == 2) stringVec[std::stoi(defCopy)] += std::to_string(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 0) intVec[std::stoi(defCopy)] += std::stoi(stringVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] += intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] += static_cast<int>(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 0) doubleVec[std::stoi(defCopy)] += std::stod(stringVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] += 0.0 + intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] += doubleVec[std::stoi(secondCopy)];
+                if (typeFirst == 0 && typeSecond == 0) *str1 += *str2;
+                else if (typeFirst == 0 && typeSecond == 1) *str1 += std::to_string(*int2);
+                else if (typeFirst == 0 && typeSecond == 2) *str1 += std::to_string(*double2);
+                else if (typeFirst == 1 && typeSecond == 0) *int1 += std::stoi(*str2);
+                else if (typeFirst == 1 && typeSecond == 1) *int1 += *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 += static_cast<int>(*double2);
+                else if (typeFirst == 2 && typeSecond == 0) *double1 += std::stod(*str2);
+                else if (typeFirst == 2 && typeSecond == 1) *double1 += 0.0 + *int2;
+                else if (typeFirst == 2 && typeSecond == 2) *double1 += *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M+. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -444,10 +557,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 2. int dbl
                 // 3. dbl int
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] -= intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] -= static_cast<int>(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] -= 0.0 + intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] -= doubleVec[std::stoi(secondCopy)];
+                if (typeFirst == 1 && typeSecond == 1) *int1 -= *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 -= static_cast<int>(*double2);
+                else if (typeFirst == 2 && typeSecond == 1) *double1 -= 0.0 + *int2;
+                else if (typeFirst == 2 && typeSecond == 2) *double1 -= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage:found incompatible variable types when using M-. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -459,10 +572,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 2. int dbl
                 // 3. dbl int
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] *= intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] *= static_cast<int>(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] *= 0.0 + intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] *= doubleVec[std::stoi(secondCopy)];
+                if (typeFirst == 1 && typeSecond == 1) *int1 *= *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 *= static_cast<int>(*double2);
+                else if (typeFirst == 2 && typeSecond == 1) *double1 *= 0.0 + *int2;
+                else if (typeFirst == 2 && typeSecond == 2) *double1 *= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M*. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -473,10 +586,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 2. int dbl
                 // 3. dbl int
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] /= intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] /= static_cast<int>(doubleVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] /= 0.0 + intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] /= doubleVec[std::stoi(secondCopy)];
+                if (typeFirst == 1 && typeSecond == 1) *int1 /= *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 /= static_cast<int>(*double2);
+                else if (typeFirst == 2 && typeSecond == 1) *double1 /= 0.0 + *int2;
+                else if (typeFirst == 2 && typeSecond == 2) *double1 /= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M/. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -485,8 +598,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (process == "%") {
                 // 1. int int
                 // 2. int dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] %= intVec[std::stoi(secondCopy)];
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] %= static_cast<int>(doubleVec[std::stoi(secondCopy)]);
+                if (typeFirst == 1 && typeSecond == 1) *int1 %= *int2;
+                else if (typeFirst == 1 && typeSecond == 2) *int1 %= static_cast<int>(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M%. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -495,7 +608,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
             else if (process == ".SIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = sin(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = sin(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -503,7 +616,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             else if (process == ".COS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = cos(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -511,7 +624,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             else if (process == ".TAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = tan(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = tan(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -519,7 +632,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             else if (process == ".COT") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = cos(doubleVec[std::stoi(secondCopy)] * PI / 180) / sin(doubleVec[std::stoi(secondCopy)] * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2 * PI / 180) / sin(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COT. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -528,7 +641,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
             else if (process == ".ASIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = asin(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                if (typeFirst == 2 && typeSecond == 2) *double1 = asin(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -536,7 +649,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             else if (process == ".ACOS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = acos(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                if (typeFirst == 2 && typeSecond == 2) *double1 = acos(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -544,7 +657,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             }
             else if (process == ".ATAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = atan(doubleVec[std::stoi(secondCopy)]) * 180 / PI;
+                if (typeFirst == 2 && typeSecond == 2) *double1 = atan(*double2 * PI / 180);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -556,10 +669,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 2. int dbl
                 // 3. dbl dbl
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = abs(intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(abs(doubleVec[std::stoi(secondCopy)]));
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = abs(0.0 + intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = abs(doubleVec[std::stoi(secondCopy)]);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = abs(*int2);
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(abs(*double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = abs(0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = abs(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ABS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -570,10 +683,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 2. int dbl
                 // 3. dbl dbl
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = static_cast<int>(sqrt(intVec[std::stoi(secondCopy)]));
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(sqrt(doubleVec[std::stoi(secondCopy)]));
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = sqrt(0.0 + intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = sqrt(doubleVec[std::stoi(secondCopy)]);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = static_cast<int>(sqrt(*int2));
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(sqrt(*double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = sqrt(0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = sqrt(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SQRT. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -585,10 +698,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 // 3. dbl dbl
                 // 4. dbl dbl
                 // first param is x and second param is y -> (x = x to the y)
-                if (typeFirst == 1 && typeSecond == 1) intVec[std::stoi(defCopy)] = pow(intVec[std::stoi(defCopy)], intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 1 && typeSecond == 2) intVec[std::stoi(defCopy)] = static_cast<int>(pow(intVec[std::stoi(defCopy)], doubleVec[std::stoi(secondCopy)]));
-                else if (typeFirst == 2 && typeSecond == 1) doubleVec[std::stoi(defCopy)] = pow(doubleVec[std::stoi(defCopy)], 0.0 + intVec[std::stoi(secondCopy)]);
-                else if (typeFirst == 2 && typeSecond == 2) doubleVec[std::stoi(defCopy)] = pow(doubleVec[std::stoi(defCopy)], doubleVec[std::stoi(secondCopy)]);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = pow(*int1, *int2);
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(pow(*int1, *double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = pow(*double1, 0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = pow(*double1, *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.POW. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -604,28 +717,19 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
         
 
         else if (lines[i][0] == 'G' && lines[i][1] == 'O' && lines[i][2] == 'T' && lines[i][3] == 'O' && lines[i][4] == ' ') { // go to line
-            std::string defCopy = "";
-            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][lines[i].size() - 1] == '_') { // değişken verilirse onun değeri sayı verilirse direkt sayı
-                for (int j = 10; j < lines[i].size() - 1; j++) {
-                    defCopy += lines[i][j];
-                }
-                defCopy = std::to_string(intVec[std::stoi(defCopy)]);
-                if (std::stoi(defCopy) % 1 != 0) { //tam sayı mı kontrol
-                    std::cout << "\nERROR:\nmessage: GOTO command need line number as integer. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
-                }
-            }
-            else if (std::stoi(std::to_string(lines[i][5])) % 1 == 0) { //tam sayı mı kontrol
-                for (int j = 5; j < lines[i].size(); j++) {
-                    defCopy += lines[i][j];
+            std::string lineNumber = "";
+            
+            if (std::stoi(std::to_string(lines[i][5])) % 1 == 0) { //tam sayı mı kontrol
+                for (int j = 5; j < line_i_size; j++) {
+                    lineNumber += lines[i][j];
                 }
             }
             else {
-                std::cout << "\nERROR:\nmessage: You have to using integer number or as variable while using GOTO. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: You have to using pure integer number while using GOTO. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
-            int integerNumberOfLineNumber = std::stoi(defCopy);
+            int integerNumberOfLineNumber = std::stoi(lineNumber);
             if (integerNumberOfLineNumber < 1 || integerNumberOfLineNumber > lines.size()) {
                 std::cout << "\nERROR:\nmessage: Line cannot found. It can be too big or too small. line:" << std::to_string(i + 1) << "\n";
                 exit(0);    
@@ -634,19 +738,14 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             i = integerNumberOfLineNumber - 2; //go to i. satır
             continue;
         }
-        else if (lines[i][0] == 'E' && lines[i][1] == 'X' && lines[i][2] == 'I' && lines[i][3] == 'T' && lines[i].size() == 4) { // stop program
+        else if (lines[i][0] == 'E' && lines[i][1] == 'X' && lines[i][2] == 'I' && lines[i][3] == 'T' && line_i_size == 4) { // stop program
             exit(0);
         }
 
-
         else if (lines[i][0] == 'I' && lines[i][1] == 'F') { // if condition
-            std::string defFirst = ""; // first state
-            std::string defSecond = ""; // second state
-            std::string defThird = ""; // third state
+            std::string varNameFirst = ""; // first state
+            std::string varNameSecond = ""; // second state
             std::string elseLineNumber = ""; // else go to <number>
-
-            //bool isFirstString = false;
-            //bool isSecondString = false;
 
             int typeFirst = 0;
             int typeSecond = 0;
@@ -656,13 +755,13 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
 
             // string
-            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r') {
+            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r' && lines[i][10] == ':') {
                 int whereFirstEnded = 0;
                 int whereSecondEnded = 0;
                 
-                for (int j = 10; j < lines[i].size(); j++) {
+                for (int j = 11; j < line_i_size; j++) {
                     if (lines[i][j] != '_') {
-                        defFirst += lines[i][j];
+                        varNameFirst += lines[i][j];
                     }
                     else {
                         whereFirstEnded = j + 1;
@@ -671,11 +770,11 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
 
                 // have to second variable is string
-                if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':' && lines[i][whereFirstEnded + 3] == 's' && lines[i][whereFirstEnded + 4] == 't' && lines[i][whereFirstEnded + 5] == 'r') {
+                if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':' && lines[i][whereFirstEnded + 3] == 's' && lines[i][whereFirstEnded + 4] == 't' && lines[i][whereFirstEnded + 5] == 'r' && lines[i][whereFirstEnded + 6] == ':') {
                     
-                    for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                    for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                         if (lines[i][j] != '_') {
-                            defSecond += lines[i][j];
+                            varNameSecond += lines[i][j];
                         }
                         else {
                             whereSecondEnded = j + 1;
@@ -683,8 +782,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         }
                     }
 
-                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == ':') {
-                        for (int j = whereSecondEnded + 6; j < lines[i].size(); j++) {
+                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == '=') {
+                        for (int j = whereSecondEnded + 6; j < line_i_size; j++) {
                             elseLineNumber += lines[i][j];
                         }
 
@@ -692,23 +791,23 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         typeSecond = 0;
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
                         exit(0);
                     }
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using string-string or int-int or double-double in IF condition. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: you have to using just string-string when using string in IF condition. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
             // int
-            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't') {
+            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][10] == ':') {
                 int whereFirstEnded = 0;
                 int whereSecondEnded = 0;
                 
-                for (int j = 10; j < lines[i].size(); j++) {
+                for (int j = 11; j < line_i_size; j++) {
                     if (lines[i][j] != '_') {
-                        defFirst += lines[i][j];
+                        varNameFirst += lines[i][j];
                     }
                     else {
                         whereFirstEnded = j + 1;
@@ -717,10 +816,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 
                 if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':') {
-                    if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't') {
-                        for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                    if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't' && lines[i][whereFirstEnded + 6] == '=') {
+                        for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                             if (lines[i][j] != '_') {
-                                defSecond += lines[i][j];
+                                varNameSecond += lines[i][j];
                             }
                             else {
                                 whereSecondEnded = j + 1;
@@ -731,10 +830,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         typeFirst = 1;
                         typeSecond = 1;
                     }
-                    else if (lines[i][whereFirstEnded + 3] == 'd' && lines[i][whereFirstEnded + 4] == 'b' && lines[i][whereFirstEnded + 5] == 'l') {
-                        for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                    else if (lines[i][whereFirstEnded + 3] == 'd' && lines[i][whereFirstEnded + 4] == 'b' && lines[i][whereFirstEnded + 5] == 'l' && lines[i][whereFirstEnded + 6] == ':') {
+                        for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                             if (lines[i][j] != '_') {
-                                defSecond += lines[i][j];
+                                varNameSecond += lines[i][j];
                             }
                             else {
                                 whereSecondEnded = j + 1;
@@ -745,9 +844,13 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         typeFirst = 1;
                         typeSecond = 2;
                     }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to using int-int or double-double when using numeric values in IF condition. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
+                    }
 
-                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == ':') {
-                        for (int j = whereSecondEnded + 6; j < lines[i].size(); j++) {
+                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == '=') {
+                        for (int j = whereSecondEnded + 6; j < line_i_size; j++) {
                             elseLineNumber += lines[i][j];
                         }
                     }
@@ -758,13 +861,13 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
             }
             // double
-            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l') {
+            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l' && lines[i][10] == ':') {
                 int whereFirstEnded = 0;
                 int whereSecondEnded = 0;
                 
-                for (int j = 10; j < lines[i].size(); j++) {
+                for (int j = 11; j < line_i_size; j++) {
                     if (lines[i][j] != '_') {
-                        defFirst += lines[i][j];
+                        varNameFirst += lines[i][j];
                     }
                     else {
                         whereFirstEnded = j + 1;
@@ -775,10 +878,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
 
                 if (lines[i][whereFirstEnded] == ' ' && lines[i][whereFirstEnded + 1] == '$' && lines[i][whereFirstEnded + 2] == ':') {
-                    if (lines[i][whereFirstEnded + 3] == 'd' && lines[i][whereFirstEnded + 4] == 'b' && lines[i][whereFirstEnded + 5] == 'l') {
-                        for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                    if (lines[i][whereFirstEnded + 3] == 'd' && lines[i][whereFirstEnded + 4] == 'b' && lines[i][whereFirstEnded + 5] == 'l' && lines[i][whereFirstEnded + 6] == ':') {
+                        for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                             if (lines[i][j] != '_') {
-                                defSecond += lines[i][j];
+                                varNameSecond += lines[i][j];
                             }
                             else {
                                 whereSecondEnded = j + 1;
@@ -789,10 +892,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         typeFirst = 2;
                         typeSecond = 2;
                     }
-                    else if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't') {
-                        for (int j = whereFirstEnded + 6; j < lines[i].size(); j++) {
+                    else if (lines[i][whereFirstEnded + 3] == 'i' && lines[i][whereFirstEnded + 4] == 'n' && lines[i][whereFirstEnded + 5] == 't' && lines[i][whereFirstEnded + 6] == ':') {
+                        for (int j = whereFirstEnded + 7; j < line_i_size; j++) {
                             if (lines[i][j] != '_') {
-                                defSecond += lines[i][j];
+                                varNameSecond += lines[i][j];
                             }
                             else {
                                 whereSecondEnded = j + 1;
@@ -803,9 +906,13 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         typeFirst = 2;
                         typeSecond = 1;
                     }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to using int-int or double-double when using numeric values in IF condition. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
+                    }
 
-                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == ':') {
-                        for (int j = whereSecondEnded + 6; j < lines[i].size(); j++) {
+                    if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == '=') {
+                        for (int j = whereSecondEnded + 6; j < line_i_size; j++) {
                             elseLineNumber += lines[i][j];
                         }
                     }
@@ -825,8 +932,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             if (lines[i][2] == '=' && lines[i][3] == '=' && lines[i][4] == ' ') {
                 if (typeFirst == 0 && typeSecond == 0) {
                     // control
-                    std::string first = stringVec[std::stoi(defFirst)];
-                    std::string second = stringVec[std::stoi(defSecond)];
+                    std::string first = stringVariables.at(varNameFirst);
+                    std::string second = stringVariables.at(varNameSecond);
                     
                     if (first == second) {
                         // correct and pass
@@ -836,7 +943,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";;
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";;
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -845,9 +952,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 else if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
-                    
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
 
                     if (first == second) {
                         // correct and pass
@@ -857,7 +963,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -866,9 +972,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 else if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
 
                     if (first == second) {
                         // correct and pass
@@ -878,7 +983,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -897,9 +1002,10 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (lines[i][2] == '!' && lines[i][3] == '=') {
                 if (typeFirst == 0 && typeSecond == 0) {
                     // control
-                    std::string first = stringVec[std::stoi(defFirst)];
-                    std::string second = stringVec[std::stoi(defSecond)];
+                    std::string first = stringVariables.at(varNameFirst);
+                    std::string second = stringVariables.at(varNameSecond);
                     
+
                     if (first != second) {
                         // correct and pass
                         continue;
@@ -908,7 +1014,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -917,9 +1023,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 else if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
-                    
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
+
 
                     if (first != second) {
                         // correct and pass
@@ -929,7 +1035,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -938,9 +1044,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 else if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
+
 
                     if (first != second) {
                         // correct and pass
@@ -950,7 +1056,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -970,8 +1076,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (lines[i][2] == '>' && lines[i][3] == '>') {
                 if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
                     
 
                     if (first > second) {
@@ -982,7 +1088,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -991,8 +1097,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 1 && typeSecond == 2) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
                     
 
                     if (first > second) {
@@ -1003,7 +1109,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1012,9 +1118,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
+
 
                     if (first > second) {
                         // correct and pass
@@ -1024,7 +1130,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1033,9 +1139,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 1) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
+
 
                     if (first > second) {
                         // correct and pass
@@ -1045,7 +1151,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1065,8 +1171,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (lines[i][2] == '>' && lines[i][3] == '=') {
                 if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
                     
 
                     if (first >= second) {
@@ -1077,7 +1183,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1086,8 +1192,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 1 && typeSecond == 2) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
                     
 
                     if (first >= second) {
@@ -1098,7 +1204,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1107,8 +1213,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
                     
 
                     if (first >= second) {
@@ -1119,7 +1225,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1128,9 +1234,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 1) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
+
 
                     if (first >= second) {
                         // correct and pass
@@ -1140,7 +1246,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1160,8 +1266,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (lines[i][2] == '<' && lines[i][3] == '<') {
                 if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
                     
 
                     if (first < second) {
@@ -1172,7 +1278,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1181,8 +1287,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 1 && typeSecond == 2) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
                     
 
                     if (first < second) {
@@ -1193,7 +1299,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1202,9 +1308,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
+
 
                     if (first < second) {
                         // correct and pass
@@ -1214,7 +1320,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1223,9 +1329,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 1) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
-                    
+                    double first = doubleVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
+
 
                     if (first < second) {
                         // correct and pass
@@ -1235,7 +1341,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1255,8 +1361,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
             else if (lines[i][2] == '<' && lines[i][3] == '=') {
                 if (typeFirst == 1 && typeSecond == 1) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
+                    int first = intVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
                     
 
                     if (first <= second) {
@@ -1267,7 +1373,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1276,9 +1382,9 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 1 && typeSecond == 2) {
                     // control
-                    int first = intVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
-                    
+                    int first = intVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
+
 
                     if (first <= second) {
                         // correct and pass
@@ -1288,7 +1394,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1297,8 +1403,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 2) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    double second = doubleVec[std::stoi(defSecond)];
+                    double first = doubleVariables.at(varNameFirst);
+                    double second = doubleVariables.at(varNameSecond);
                     
 
                     if (first <= second) {
@@ -1309,7 +1415,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1318,8 +1424,8 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                 }
                 if (typeFirst == 2 && typeSecond == 1) {
                     // control
-                    double first = doubleVec[std::stoi(defFirst)];
-                    int second = intVec[std::stoi(defSecond)];
+                    double first = doubleVariables.at(varNameFirst);
+                    int second = intVariables.at(varNameSecond);
                     
 
                     if (first <= second) {
@@ -1330,7 +1436,7 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
                         // go to command
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
-                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE:. line:" << std::to_string(i + 1) << "\n";
+                            std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
                             exit(0);
                         }
                         i = int_ElseLineNumber - 2;
@@ -1352,23 +1458,23 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
         else if (lines[i][0] == 'I' && lines[i][1] == 'N' && lines[i][2] == 'C' && lines[i][3] == ' ') {
             
-            std::string defCopy = "";
+            std::string varName = "";
 
-            if (lines[i][4] == '$' && lines[i][5] == ':' && lines[i][lines[i].size() - 1] == '_') {
-                if (lines[i][6] == 'i' && lines[i][7] == 'n' && lines[i][8] == 't') {
-                    for (int j = 9; j < lines[i].size() - 1; j++) {
-                        defCopy += lines[i][j];
+            if (lines[i][4] == '$' && lines[i][5] == ':' && lines[i][line_i_size - 1] == '_') {
+                if (lines[i][6] == 'i' && lines[i][7] == 'n' && lines[i][8] == 't' && lines[i][9] == ':') {
+                    for (int j = 10; j < line_i_size - 1; j++) {
+                        varName += lines[i][j];
                     }
-                    intVec[std::stoi(defCopy)]++;
+                    intVariables.at(varName)++;
                 }
-                else if (lines[i][6] == 'd' && lines[i][7] == 'b' && lines[i][8] == 'l') {
-                    for (int j = 9; j < lines[i].size() - 1; j++) {
-                        defCopy += lines[i][j];
+                else if (lines[i][6] == 'd' && lines[i][7] == 'b' && lines[i][8] == 'l' && lines[i][9] == ':') {
+                    for (int j = 10; j < line_i_size - 1; j++) {
+                        varName += lines[i][j];
                     }
-                    doubleVec[std::stoi(defCopy)]++;
+                    doubleVariables.at(varName)++;
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int or double variable when using INC command. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: you have to using int or double variable types when using INC command. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
@@ -1379,23 +1485,23 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
         }
         else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'C' && lines[i][3] == ' ') {
             
-            std::string defCopy = "";
+            std::string varName = "";
 
-            if (lines[i][4] == '$' && lines[i][5] == ':' && lines[i][lines[i].size() - 1] == '_') {
-                if (lines[i][6] == 'i' && lines[i][7] == 'n' && lines[i][8] == 't') {
-                    for (int j = 9; j < lines[i].size() - 1; j++) {
-                        defCopy += lines[i][j];
+            if (lines[i][4] == '$' && lines[i][5] == ':' && lines[i][line_i_size - 1] == '_') {
+                if (lines[i][6] == 'i' && lines[i][7] == 'n' && lines[i][8] == 't' && lines[i][9] == ':') {
+                    for (int j = 10; j < line_i_size - 1; j++) {
+                        varName += lines[i][j];
                     }
-                    intVec[std::stoi(defCopy)]--;
+                    intVariables.at(varName)--;
                 }
-                else if (lines[i][6] == 'd' && lines[i][7] == 'b' && lines[i][8] == 'l') {
-                    for (int j = 9; j < lines[i].size() - 1; j++) {
-                        defCopy += lines[i][j];
+                else if (lines[i][6] == 'd' && lines[i][7] == 'b' && lines[i][8] == 'l' && lines[i][9] == ':') {
+                    for (int j = 10; j < line_i_size - 1; j++) {
+                        varName += lines[i][j];
                     }
-                    doubleVec[std::stoi(defCopy)]--;
+                    doubleVariables.at(varName)--;
                 }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using int or double variable when using DEC command. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: you have to using int or double variable types when using DEC command. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
@@ -1408,56 +1514,54 @@ void run(std::string& text, std::vector<std::string>& lines, std::vector<bool>& 
 
         else if (lines[i][0] == 'N' && lines[i][1] == 'U' && lines[i][2] == 'L' && lines[i][3] == 'L' && lines[i][4] == ' ') {
             
-            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][lines[i].size() - 1] != '_') {
+            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
-            std::string defCopy = "";
-            for (int j = 10; j < lines[i].size() - 1; j++) {
-                defCopy += lines[i][j];
+            std::string varName = "";
+            for (int j = 11; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
             }
 
-            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r')
-                stringVec[std::stoi(defCopy)] = "";
-            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't')
-                intVec[std::stoi(defCopy)] = 0;
-            else if (lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l')
-                doubleVec[std::stoi(defCopy)] = 0.0;
+            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r' && lines[i][10] == ':')
+                stringVariables.at(varName) = "";
+            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][10] == ':')
+                intVariables.at(varName) = 0;
+            else if (lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l' && lines[i][10] == ':')
+                doubleVariables.at(varName) = 0.0;
             else {
-                std::cout << "\nERROR:\nmessage: you have to using int or string or double variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: you have to using :int: or :string: or :double: variable when using NULL command for call variables. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
         }
 
         else if (lines[i][0] == 'F' && lines[i][1] == 'R' && lines[i][2] == 'E' && lines[i][3] == 'E' && lines[i][4] == ' ') {
             
-            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][lines[i].size() - 1] != '_') {
+            if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a variable when using FREE command. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
 
-            std::string defCopy = "";
-            for (int j = 10; j < lines[i].size() - 1; j++) {
-                defCopy += lines[i][j];
+            std::string varName = "";
+            for (int j = 11; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
             }
 
-            int index = std::stoi(defCopy);
-
-            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r') {
-                stringVec[index] = "";
-                stringVec.erase(stringVec.begin() + index);
+            if (lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r' && lines[i][10] == ':') {
+                stringVariables.at(varName) = "";
+                stringVariables.erase(varName);
             }
-            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't') {
-                intVec[index] = 0;
-                intVec.erase(intVec.begin() + index);
+            else if (lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][10] == ':') {
+                intVariables.at(varName) = 0;
+                intVariables.erase(varName);
             }
-            else if (lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l') {
-                doubleVec[index] = 0.0;
-                doubleVec.erase(doubleVec.begin() + index);
+            else if (lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l' && lines[i][10] == ':') {
+                doubleVariables.at(varName) = 0.0;
+                doubleVariables.erase(varName);
             }
             else {
-                std::cout << "\nERROR:\nmessage: you have to using string or int or double variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: you have to using string or int or double variable when using NULL command for call variables. line:" << std::to_string(i + 1) << "\n";
                 exit(0);
             }
         }

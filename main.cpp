@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <math.h>
+#include <thread>
 #include <fstream>
 #include <algorithm>
 
@@ -166,6 +167,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                             }
                             controller++;
                             myLine.replace(j, controller, stringVariables.at(varName)); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız string değeri gösterir.
+                            j += controller;
                         }
                         else if (myLine[j + controller + 1] == 'i' && myLine[j + controller + 2] == 'n' && myLine[j + controller + 3] == 't' && myLine[j + controller + 4] == ':') { // if int
                             controller += 5;
@@ -175,6 +177,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                             }
                             controller++;
                             myLine.replace(j, controller, std::to_string(intVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız int değeri gösterir.
+                            j += controller;
                         }
                         else if (myLine[j + controller + 1] == 'd' && myLine[j + controller + 2] == 'b' && myLine[j + controller + 3] == 'l' && myLine[j + controller + 4] == ':') { // if double
                             controller += 5;
@@ -184,6 +187,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                             }
                             controller++;
                             myLine.replace(j, controller, std::to_string(doubleVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız double değeri gösterir.
+                            j += controller;
                         }
                         else {
                             std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
@@ -1565,6 +1569,115 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 exit(0);
             }
         }
+
+        else if (lines[i][0] == 'I' && lines[i][1] == 'N' && lines[i][2] == 'D' && lines[i][3] == 'E' && lines[i][4] == 'X') {
+            if (lines[i][5] == '[' && lines[i][line_i_size - 1] == '_') { // ikinci koşul olmasının sebebi komutumuz _ ile bitmek zorunda ikinci parametre değişkendir ve _ ile biter.
+                int index = 0;
+                int afterIndexSpace = 0;
+                
+                if (lines[i][6] == '$' && lines[i][7] == ':' && lines[i][8] == 'i' && lines[i][9] == 'n' && lines[i][10] == 't' && lines[i][11] == ':') {
+                    std::string indexVarName = "";
+                    for (int j = 12; j < line_i_size; j++) {
+                        if (lines[i][j] != '_') {
+                            indexVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ']') {
+                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using INDEX command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            afterIndexSpace = j + 2;
+                            break;
+                        }
+                    }
+                    index = intVariables.at(indexVarName);
+                }
+                else if (std::stoi(std::to_string(lines[i][6])) % 1 == 0) {
+                    std::string indexIntValue = "";
+                    bool isEnded = false;
+                    for (int j = 6; j < line_i_size; j++) {
+                        if (lines[i][j] == ']') {
+                            isEnded = true;
+                            afterIndexSpace = j + 1;
+                            break;
+                        }
+                        else {
+                            indexIntValue += lines[i][j];
+                        }
+                    }
+                    if (!isEnded) {
+                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
+                    }
+                    index = std::stoi(indexIntValue);
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using INDEX command's index. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+        
+                if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':' || lines[i][afterIndexSpace + 3] != 's' || lines[i][afterIndexSpace + 4] != 't' || lines[i][afterIndexSpace + 5] != 'r' || lines[i][afterIndexSpace + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+
+                std::string firstVarName = "";
+                std::string secondVarName = "";
+                bool isSwitch = false;
+                for (int j = afterIndexSpace + 7; j < line_i_size; j++) {
+                    if (isSwitch) {
+                        if (lines[i][j] != '_') {
+                            secondVarName += lines[i][j];
+                        }
+                    }
+                    else {
+                        if (lines[i][j] != '_') {
+                            firstVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ' ' || lines[i][j + 2] != '$' || lines[i][j + 3] != ':' || lines[i][j + 4] != 's' || lines[i][j + 5] != 't' || lines[i][j + 6] != 'r' || lines[i][j + 7] != ':') {
+                                std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            j += 7; // 8 yapmamız gerekirdi ancak for döngüsü tamamlanınca zaten +1 yapacak o yüzden 7
+                            isSwitch = true;
+                        }
+                    }
+                }
+
+                // ilk parametrenin index'inci indexini ikinci parametreye eşitliyoruz.
+                stringVariables.at(secondVarName) = stringVariables.at(firstVarName).at(index);
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'INDEX[<int>]' when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
+        else if (lines[i][0] == 'S' && lines[i][1] == 'L' && lines[i][2] == 'E' && lines[i][3] == 'E' && lines[i][4] == 'P' && lines[i][5] == ' ') {
+            int millisecond = 0;
+            if (lines[i][6] == '$' && lines[i][7] == ':' && lines[i][8] == 'i' && lines[i][9] == 'n' && lines[i][10] == 't' && lines[i][11] == ':' && lines[i][line_i_size - 1] == '_') {
+                std::string varName = "";
+                for (int j = 12; j < line_i_size - 1; j++) {
+                    varName += lines[i][j];
+                }
+                millisecond = intVariables.at(varName);
+            }
+            else if (std::stoi(std::to_string(lines[i][6])) % 1 == 0) {
+                std::string number = "";
+                for (int j = 6; j < line_i_size; j++) {
+                    number += lines[i][j];
+                }
+                millisecond = std::stoi(number);
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using SLEEP command's millisecond parameter. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+            // main fonksiyonumuzun threadinde yani genel bir threadde bekletiyoruz.
+            std::this_thread::sleep_for(std::chrono::milliseconds(millisecond));
+        }
+
 
 
 

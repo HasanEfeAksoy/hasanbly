@@ -2,10 +2,10 @@ DEF:str:name=noname;
 DEF:int:firstNum=12;
 DEF:int:secondNum=10;
 DEF:dbl:myDouble=10.1;
+
 <<^$^$Hi!;
-
 IF>> $:dbl:myDouble_ $:int:secondNum_ ELSE=33;
-
+SLEEP 1000;
 <<Hello, World!;
 <<What is your name?;
 >$:str:name_;

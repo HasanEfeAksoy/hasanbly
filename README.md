@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v11</b>
+<b>v12</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -12,9 +12,11 @@ if you want devoloping this project you can compile like this:
 <br>
 <h1>Get Started</h1>
 <br>
-Download hsnc.exe (for windows. for linux and mac you can compile for linux or mac as above. (same command)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command. (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
+Download hsnc.exe (hsnc.exe is just for Windows but you can compile for Linux and MacOS with same command (begin part of README.md file)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command. (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
 <br>
-<p>Hasanbly is open source, non parser basic scripting language created with C++.
+<p>Hasanbly is open source, not used parser basic scripting language.
+<br>
+Created with C++.
 <br>
 It is just <i>interprete</i> and run your codes easily.</p>
 
@@ -56,6 +58,29 @@ EXIT;
   <br>
   <br>
   output: <i></i>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>EXIT</h4>
+  <br>
+  <p>Ends the program. At the end of the program, you have to put EXIT command otherwise the program does not run.
+  <br>
+  <br>
+  <i>
+  &ltBye;
+  <br>
+  EXIT;
+  <br>
+  &ltBye;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>Bye</i>
   </p>
 </li>
 
@@ -358,25 +383,55 @@ EXIT;
 <br>
 
 <li>
-  <h4>EXIT</h4>
+  <h4>INDEX</h4>
   <br>
-  <p>Ends the program. At the end of the program, you have to put EXIT command otherwise the program does not run.
+  <p>Copy n'th index of first parameter and set value to second parameter. Just using with strings
   <br>
   <br>
   <i>
-  &ltBye;
+  DEF:str:name=hasanbly;
   <br>
-  EXIT;
+  DEF:str:myIndex=nullForNow;
   <br>
-  &ltBye;
+  &lt&lt$:str:myIndex_;
+  <br>
+  INDEX[2] $:str:name_ $:str:myIndex;
+  <br>
+  &lt&lt$:str:myIndex_;
   <br>
   EXIT;
   </i>
   <br>
   <br>
-  output: <i>Bye</i>
+  output: <i>nullForNow<br>s</i>
   </p>
 </li>
+
+<br>
+
+<li>
+  <h4>SLEEP</h4>
+  <br>
+  <p>Sleep main process. Just one parameter and it can be pure integer number or integer variable. Time type is millisecond.
+  <br>
+  <br>
+  <i>
+  DEF:str:name=hasanbly;
+  <br>
+  SLEEP 1000;
+  <br>
+  // sleeping 1000 millisecond (1 second)
+  <br>
+  &lt&lt$:str:name_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>hasanbly</i>
+  </p>
+</li>
+
 
 </ul>
 

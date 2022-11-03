@@ -1,4 +1,4 @@
-DEF:str:name=noname;
+DEF:str:name=noname$;
 DEF:int:firstNum=12;
 DEF:int:secondNum=10;
 DEF:dbl:myDouble=10.1;
@@ -21,13 +21,5 @@ M* $:int:firstNum_ $:int:secondNum_;
 M+ $:str:name_ $:int:secondNum_;
 
 <<$:str:name_;
-
-<<;
-
-<<$:int:firstNum_;
-INC $:int:firstNum_;
-<<$:int:firstNum_;
-NULL $:int:firstNum_;
-<<$:int:firstNum_;
 
 EXIT;

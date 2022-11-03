@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <math.h>
 #include <thread>
+#include <time.h>
 #include <fstream>
 #include <algorithm>
 
@@ -14,6 +15,8 @@
 
 void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables);
 int main(int argc, char** argv) {
+    srand(time(NULL));
+
     if (!argv[1]) {
         std::cout << "\nERROR:\nmessage: no input file.\n";
         return 0;
@@ -48,7 +51,9 @@ int main(int argc, char** argv) {
         std::cout << "\nERROR:\nmessage: wrong input file type.\n";
         return 0;
     }
+    return 0;
 }
+
 void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables) {
     // unInterprete listine başlangıç değer ataması
     for (int i = 0; i < lines.size(); i++) {
@@ -166,8 +171,9 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, stringVariables.at(varName)); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız string değeri gösterir.
-                            j += controller;
+                            std::string replaceStr = stringVariables.at(varName);
+                            myLine.replace(j, controller, replaceStr); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız string değeri gösterir.
+                            j += replaceStr.size() - 1;
                         }
                         else if (myLine[j + controller + 1] == 'i' && myLine[j + controller + 2] == 'n' && myLine[j + controller + 3] == 't' && myLine[j + controller + 4] == ':') { // if int
                             controller += 5;
@@ -176,8 +182,9 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, std::to_string(intVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız int değeri gösterir.
-                            j += controller;
+                            std::string replaceStr = std::to_string(intVariables.at(varName));
+                            myLine.replace(j, controller, replaceStr); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız int değeri gösterir.
+                            j += replaceStr.size() - 1;
                         }
                         else if (myLine[j + controller + 1] == 'd' && myLine[j + controller + 2] == 'b' && myLine[j + controller + 3] == 'l' && myLine[j + controller + 4] == ':') { // if double
                             controller += 5;
@@ -186,8 +193,9 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                                 controller++;
                             }
                             controller++;
-                            myLine.replace(j, controller, std::to_string(doubleVariables.at(varName))); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız double değeri gösterir.
-                            j += controller;
+                            std::string replaceStr = std::to_string(doubleVariables.at(varName));
+                            myLine.replace(j, controller, replaceStr); // j bizim kaçıncı elemandan replace etmeye başlayacağımızı gösterir. controller kaç eleman yerine bunu ekleyeceğimiz gösterir yani 1 eleman replace etsek dahi buraya yazacağımız int sayı kadar eleman silinir, sonuncusu ise replace edeceğimiz unordered_map ten alacağımız double değeri gösterir.
+                            j += replaceStr.size() - 1;
                         }
                         else {
                             std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
@@ -1629,6 +1637,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         if (lines[i][j] != '_') {
                             secondVarName += lines[i][j];
                         }
+                        else {
+                            if (j != line_i_size - 1) {
+                                std::cout << "\nERROR:\nmessage: you have to using variable when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                        }
                     }
                     else {
                         if (lines[i][j] != '_') {
@@ -1676,6 +1690,79 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             // main fonksiyonumuzun threadinde yani genel bir threadde bekletiyoruz.
             std::this_thread::sleep_for(std::chrono::milliseconds(millisecond));
+        }
+
+        else if (lines[i][0] == 'R' && lines[i][1] == 'A' && lines[i][2] == 'N' && lines[i][3] == 'D' && lines[i][4] == ' ') {
+            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][10] == ':' && lines[i][line_i_size - 1] == '_') {
+                std::string varName = "";
+                std::string varNameMinValue = "";
+                std::string varNameMaxValue = "";
+                int whereIsJ = 0;
+
+                // read destination variable
+                for (int j = 11; j < line_i_size; j++) {
+                    if (lines[i][j] != '_') {
+                        varName += lines[i][j];
+                    }
+                    else {
+                        whereIsJ = j + 1; // ' '
+                        break;
+                    }
+                }
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command or you may forgot put space between parameters of RAND command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+                // read min val variable
+                for (int j = whereIsJ; j < line_i_size; j++) {
+                    if (lines[i][j] != '_') {
+                        varNameMinValue += lines[i][j];
+                    }
+                    else {
+                        whereIsJ = j + 1; // ' '
+                        break;
+                    }
+                }
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command or you may forgot put space between parameters of RAND command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+                // read max val variable
+                for (int j = whereIsJ; j < line_i_size; j++) {
+                    if (lines[i][j] != '_') {
+                        varNameMaxValue += lines[i][j];
+                    }
+                    else {
+                        if (j != line_i_size - 1) {
+                            std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
+                        }
+                        //whereIsJ = j + 1; // ' '
+                        break;
+                    }
+                }
+
+                int max = intVariables.at(varNameMaxValue);
+                int min = intVariables.at(varNameMinValue);
+
+                if (max < min) {
+                    std::cout << "\nERROR:\nmessage: second parameter can not greater than third parameter when using RAND command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+
+                int randomNumber = rand() % (max + 1 - min) + min;
+                // rand() % (max + 1 - min) + min
+                // ((double)rand() * (max - min)) / (double)RAND_MAX + min;
+                intVariables.at(varName) = randomNumber;
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to use integer variable when using RAND command (RAND $:int:dest_ $:int:min_ $:int:max_;). line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
         }
 
 

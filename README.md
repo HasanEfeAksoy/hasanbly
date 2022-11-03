@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v12</b>
+<b>v13</b>
 <br>
 <br>
 if you want devoloping this project you can compile like this:
@@ -432,6 +432,32 @@ EXIT;
   </p>
 </li>
 
+<br>
+
+<li>
+  <h4>RAND</h4>
+  <br>
+  <p>Random integer number generator. Have to using integer variables. 3 parameter (destination, min, max)
+  <br>
+  <br>
+  <i>
+  DEF:int:dest=0;
+  <br>
+  DEF:int:min=3;
+  <br>
+  DEF:int:max=8;
+  <br>
+  // random int number between 3-8 (3,4,5,6,7,8)
+  <br>
+  &lt&lt$:int:dest_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>6</i>
+  </p>
+</li>
 
 </ul>
 

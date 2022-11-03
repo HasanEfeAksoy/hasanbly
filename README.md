@@ -449,6 +449,8 @@ EXIT;
   <br>
   // random int number between 3-8 (3,4,5,6,7,8)
   <br>
+  RAND $:int:dest_ $:int:min_ $:int:max_;
+  <br>
   &lt&lt$:int:dest_;
   <br>
   EXIT;

@@ -29,11 +29,11 @@ It is just <i>interprete</i> and run your codes easily.</p>
 <br>
 <p>Firstly, maybe you want writing Hello, World! in console 🙃</p>
 <br>
-<pre><p><i>
+<pre><code><p><i>
 &lt&ltHello, World!;
 <br>
 EXIT;
-</i></p></pre>
+</i></p></code></pre>
 
 <br>
 <br>

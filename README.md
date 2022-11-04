@@ -5,7 +5,7 @@ hasanbly basic scripting language
 <b>v13</b>
 <br>
 <br>
-if you want devoloping this project you can compile like this:
+if you want developing this project you can compile like this:
 <br>
 <b><i>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</i></b>
 

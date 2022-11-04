@@ -29,11 +29,11 @@ It is just <i>interprete</i> and run your codes easily.</p>
 <br>
 <p>Firstly, maybe you want writing Hello, World! in console 🙃</p>
 <br>
-```<p><i>
+<pre><p><i>
 &lt&ltHello, World!;
 <br>
 EXIT;
-</i></p>```
+</i></p></pre>
 
 <br>
 <br>
@@ -48,16 +48,16 @@ EXIT;
   <p>Comment line. The // operator only makes one line completely uninterpretable. So it cannot be used on a used line. 
   <br>
   <br>
-  ```<i>
+  <pre><i>
   // This is comment line
   <br>
   // this lines will do not care by interpreter.
   <br>
   EXIT;
-  </i>```
+  </i></pre>
   <br>
   <br>
-  ```output: <i></i>```
+  <pre>output: <i></i></pre>
   </p>
 </li>
 

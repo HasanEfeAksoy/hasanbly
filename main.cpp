@@ -1766,6 +1766,53 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
         }
 
 
+        else if (lines[i][0] == 'S' && lines[i][1] == 'T' && lines[i][2] == 'R' && lines[i][3] == 'L' && lines[i][4] == 'E' && lines[i][5] == 'N' && lines[i][6] == ' ') {
+            if (lines[i][7] == '$' && lines[i][8] == ':' && lines[i][9] == 's' && lines[i][10] == 't' && lines[i][11] == 'r' && lines[i][12] == ':' && lines[i][line_i_size - 1] == '_') {
+                std::string varNameSource = "";
+                std::string varNameDestination = "";
+                int whereIsJ = 0;
+
+                // read source variable
+                for (int j = 13; j < line_i_size; j++) {
+                    if (lines[i][j] != '_') {
+                        varNameSource += lines[i][j];
+                    }
+                    else {
+                        whereIsJ = j + 1; // ' '
+                        break;
+                    }
+                }
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command or you may forgot put space between parameters of STRLEN command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+                // read destination variable
+                for (int j = whereIsJ; j < line_i_size; j++) {
+                    if (lines[i][j] != '_') {
+                        varNameDestination += lines[i][j];
+                    }
+                    else {
+                        if (j != line_i_size - 1) {
+                            std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command or you may forgot put space between parameters of STRLEN command. line:" << std::to_string(i + 1) << "\n";
+                            exit(0);
+                        }
+                        //whereIsJ = j + 1; // ' '
+                        break;
+                    }
+                }
+
+                // int or size_t
+                size_t strSize = stringVariables.at(varNameSource).size();
+                intVariables.at(varNameDestination) = strSize;
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
 
 
         

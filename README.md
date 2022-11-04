@@ -461,6 +461,31 @@ EXIT;
   </p>
 </li>
 
+<br>
+
+<li>
+  <h4>STRLEN</h4>
+  <br>
+  <p>Returns string's length. Have to using 2 (str, int) variables. 2 parameters are (source, destination)
+  <br>
+  <br>
+  <i>
+  DEF:str:text=hello;
+  <br>
+  DEF:int:length=0;
+  <br>
+  STRLEN $:str:text_ $:int:length_;
+  <br>
+  &lt&lt$:int:length_;
+  <br>
+  EXIT;
+  </i>
+  <br>
+  <br>
+  output: <i>5</i>
+  </p>
+</li>
+
 </ul>
 
 <br>

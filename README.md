@@ -29,11 +29,11 @@ It is just <i>interprete</i> and run your codes easily.</p>
 <br>
 <p>Firstly, maybe you want writing Hello, World! in console 🙃</p>
 <br>
-<p><i>
+```<p><i>
 &lt&ltHello, World!;
 <br>
 EXIT;
-</i></p>
+</i></p>```
 
 <br>
 <br>
@@ -48,16 +48,16 @@ EXIT;
   <p>Comment line. The // operator only makes one line completely uninterpretable. So it cannot be used on a used line. 
   <br>
   <br>
-  <i>
+  ```<i>
   // This is comment line
   <br>
   // this lines will do not care by interpreter.
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i></i>
+  ```output: <i></i>```
   </p>
 </li>
 
@@ -69,7 +69,7 @@ EXIT;
   <p>Ends the program. At the end of the program, you have to put EXIT command otherwise the program does not run.
   <br>
   <br>
-  <i>
+  ```<i>
   &ltBye;
   <br>
   EXIT;
@@ -77,10 +77,10 @@ EXIT;
   &ltBye;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>Bye</i>
+  ```output: <i>Bye</i>```
   </p>
 </li>
 
@@ -92,7 +92,7 @@ EXIT;
   <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl).
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:str:name=empty;
   <br>
   &lt&lt$:str:name_;
@@ -106,10 +106,10 @@ EXIT;
   &lt&lt$:dbl:myDouble_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>empty<br>15<br>4.500000</i>
+  ```output: <i>empty<br>15<br>4.500000</i>```
   </p>
 </li>
 
@@ -121,14 +121,14 @@ EXIT;
   <p>Prints the written values to the console.
   <br>
   <br>
-  <i>
+  ```<i>
   &ltHello;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>Hello</i>
+  ```output: <i>Hello</i>```
   </p>
 </li>
 
@@ -140,14 +140,14 @@ EXIT;
   <p>Prints the written values to the console with next line.
   <br>
   <br>
-  <i>
+  ```<i>
   &lt&ltHello;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>Hello</i>
+  ```output: <i>Hello</i>```
   <br>
   </p>
 </li>
@@ -160,7 +160,7 @@ EXIT;
   <p>Assigns the entered value to the value of the written variable.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:str:text=noname;
   <br>
   // entered 'hasanbly'
@@ -170,10 +170,10 @@ EXIT;
   &lt&lt$:str:text_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>hasanbly</i>
+  ```output: <i>hasanbly</i>```
   </p>
 </li>
 
@@ -187,7 +187,7 @@ EXIT;
   But you have to using variables. You can convert type of variables with use M= command.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:first=0;
   <br>
   DEF:int:second=1;
@@ -199,10 +199,10 @@ EXIT;
   &lt&lt$:int:first_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>1</i>
+  ```output: <i>1</i>```
   </p>
 </li>
 
@@ -214,7 +214,7 @@ EXIT;
   <p>Going to line. You can using with line number or line number variable value.
   <br>
   <br>
-  <i>
+  ```<i>
   &ltHi; 
   <br>
   GOTO 1;
@@ -230,10 +230,10 @@ EXIT;
   //GOTO $:int:line_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>HiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHi........</i>
+  ```output: <i>HiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHiHi........</i>```
   </p>
 </li>
 
@@ -251,7 +251,7 @@ EXIT;
   IMPORTANT: you have to string-string or int-int or double-double when using == or !=. but if using &lt&lt &gt&gt &lt= &gt= you have to input parameters just int-int/double or double-double/int.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:num1=0;
   <br>
   DEF:int:num2=0;
@@ -267,10 +267,10 @@ EXIT;
   &lt&ltHello everyone;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>Hello everyone</i>
+  ```output: <i>Hello everyone</i>```
   </p>
 </li>
 
@@ -282,7 +282,7 @@ EXIT;
   <p>Increase the variable. You can use for int and double.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:number=0;
   <br>
   &lt&lt$:int:number_;
@@ -292,10 +292,10 @@ EXIT;
   &lt&lt$:int:number_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>0<br>1</i>
+  ```output: <i>0<br>1</i>```
   </p>
 </li>
 
@@ -307,7 +307,7 @@ EXIT;
   <p>Decrease the variable. You can use for int and double.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:number=1;
   <br>
   &lt&lt$:int:number_;
@@ -317,10 +317,10 @@ EXIT;
   &lt&lt$:int:number_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>1<br>0</i>
+  ```output: <i>1<br>0</i>```
   </p>
 </li>
 
@@ -338,7 +338,7 @@ EXIT;
   if variable is double, new value is 0.0.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:number=1;
   <br>
   &lt&lt$:int:number_;
@@ -348,10 +348,10 @@ EXIT;
   &lt&lt$:int:number_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>1<br>0</i>
+  ```output: <i>1<br>0</i>```
   </p>
 </li>
 
@@ -363,7 +363,7 @@ EXIT;
   <p>Delete the variable and set value of memory to null.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:myAwasomeNumber=5;
   <br>
   &lt&lt$:int:myAwesomeNumber_;
@@ -373,10 +373,10 @@ EXIT;
   &lt&lt$:int:myAwesomeNumber_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>5<br>ERROR</i>
+  ```output: <i>5<br>ERROR</i>```
   </p>
 </li>
 
@@ -388,7 +388,7 @@ EXIT;
   <p>Copy n'th index of first parameter and set value to second parameter. Just using with strings
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:str:name=hasanbly;
   <br>
   DEF:str:myIndex=nullForNow;
@@ -400,10 +400,10 @@ EXIT;
   &lt&lt$:str:myIndex_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>nullForNow<br>s</i>
+  ```output: <i>nullForNow<br>s</i>```
   </p>
 </li>
 
@@ -415,7 +415,7 @@ EXIT;
   <p>Sleep main process. Just one parameter and it can be pure integer number or integer variable. Time type is millisecond.
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:str:name=hasanbly;
   <br>
   SLEEP 1000;
@@ -425,10 +425,10 @@ EXIT;
   &lt&lt$:str:name_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>hasanbly</i>
+  ```output: <i>hasanbly</i>```
   </p>
 </li>
 
@@ -440,7 +440,7 @@ EXIT;
   <p>Random integer number generator. Have to using integer variables. 3 parameter (destination, min, max)
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:int:dest=0;
   <br>
   DEF:int:min=3;
@@ -454,10 +454,10 @@ EXIT;
   &lt&lt$:int:dest_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>6</i>
+  ```output: <i>6</i>```
   </p>
 </li>
 
@@ -469,7 +469,7 @@ EXIT;
   <p>Returns string's length. Have to using 2 (str, int) variables. 2 parameters are (source, destination)
   <br>
   <br>
-  <i>
+  ```<i>
   DEF:str:text=hello;
   <br>
   DEF:int:length=0;
@@ -479,10 +479,10 @@ EXIT;
   &lt&lt$:int:length_;
   <br>
   EXIT;
-  </i>
+  </i>```
   <br>
   <br>
-  output: <i>5</i>
+  ```output: <i>5</i>```
   </p>
 </li>
 

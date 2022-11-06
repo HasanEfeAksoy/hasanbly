@@ -867,7 +867,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
                         exit(0);
                     }
                 }
@@ -929,7 +929,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                     }
                     else {
-                        std::cout << "\nERROR:\nmessage: you have to using ELSE:<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
+                        std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
                         exit(0);
                     }
                 }

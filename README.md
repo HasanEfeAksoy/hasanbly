@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br>
 <br>
-<b>v13</b>
+<b>version 1.3</b>
 <br>
 <br>
 if you want developing this project you can compile like this:

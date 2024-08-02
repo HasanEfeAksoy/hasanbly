@@ -1,25 +1,8 @@
-DEF:str:name=noname$;
-DEF:int:firstNum=12;
-DEF:int:secondNum=10;
-DEF:dbl:myDouble=10.1;
+DEF:str:name=blabla1;
+DEF:int:blabla2=0;
 
 <<^$^$Hello World!^$^$;
 
-IF>> $:dbl:myDouble_ $:int:secondNum_ ELSE=24;
-
-<<What is your name?;
->$:str:name_;
-<<Welcome to hasanbly dear $:str:name_.;
-
-<<;
-
-<$:int:firstNum_ * $:int:secondNum_ = ;
-M* $:int:firstNum_ $:int:secondNum_;
-<<$:int:firstNum_;
-
-DEF:int:size=0;
-STRLEN $:str:name_ $:int:size_;
-<$:str:name_'s char length: ;
-<<$:int:size_;
+<<$:int:blabla2_;
 
 EXIT;

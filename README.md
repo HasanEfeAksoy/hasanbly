@@ -38,7 +38,7 @@ Created with C++.
 <br>
 <h3>Hello, World!</h3>
 <br>
-<p>Firstly, maybe you want writing Hello, World! in console 🙃</p>
+<p>First, you may want to print Hello, World! to the console 🙃</p>
 <br>
 <pre>
 <p><i>

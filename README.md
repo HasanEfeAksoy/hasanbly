@@ -22,12 +22,15 @@ Run with <b><i><pre>hsnc main.hsn</pre></i></b> command.
 (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
 <br>
 <br>
+
+<b>
 <p>Hasanbly is open source, not used parser basic scripting language.
 <br>
 Created with C++.
 <br>
-It is just <i>interprete</i> and run your codes easily.</p>
-
+<h4>It is just <i>interprete</i> and run your codes easily.</h4></p>
+</b>
+  
 <br>
 <br>
 

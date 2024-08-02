@@ -12,9 +12,9 @@ if you want developing this project you can compile like this:
 <br>
 <h1>Get Started</h1>
 <br>
-<b>You can get it with the command <pre>git clone https://github.com/HasanEfeAksoy/hasanbly.git</pre>pre> or as a .zip file.</b>
+<b>You can get it with the command <pre>git clone https://github.com/HasanEfeAksoy/hasanbly.git</pre></b>
 <br>
-Download hsnc.exe (hsnc.exe is just for Windows but you can compile for Linux and MacOS with same command (begin part of README.md file)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command. (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
+Or get it as zip. Download hsnc.exe (hsnc.exe is just for Windows but you can compile for Linux and MacOS with same command (begin part of README.md file)) and create your .hsn file (ex: main.hsn) and run with <b><i>hsnc main.hsn</i></b> command. (note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
 <br>
 <p>Hasanbly is open source, not used parser basic scripting language.
 <br>

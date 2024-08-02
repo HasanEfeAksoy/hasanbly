@@ -7,7 +7,7 @@ hasanbly basic scripting language
 <br>
 if you want developing this project you can compile like this:
 <br>
-<b><i>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</i></b>
+<b><i><pre>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</pre></i></b>
 
 <br>
 <h1>Get Started</h1>

@@ -618,7 +618,7 @@ EXIT;
   </pre>
   <br>
   <br>
-  <pre>output: <i>[&st your current folder contents &gt]</i></pre>
+  <pre>output: <i>[&lt your current folder contents &gt]</i></pre>
   </p>
 </li>
 

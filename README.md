@@ -213,7 +213,7 @@ EXIT;
 <li>
   <h4>M</h4>
   <br>
-  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl:myNum1_ $:dbl:myNum2_;) note(for double variables), M.ABS, M.POW, M.SQRT.
+  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl:myNum1_ $:dbl:myNum2_;) [note : just for radians double variables], M.ABS, M.POW, M.SQRT.
   <br>
   But you have to using variables. You can convert type of variables with use M= command.
   <br>
@@ -300,7 +300,7 @@ EXIT;
   <br>
   IF== $:int:num1_ $:int:num2_ ELSE:8;
   <br>
-  &lt&ltHello everyone;
+  &nbsp;&nbsp;&nbsp;&nbsp;&lt&ltHello everyone;
   <br>
   EXIT;
   </i>
@@ -564,6 +564,63 @@ EXIT;
   </p>
 </li>
 
+<br>
+
+<li>
+  <h4>REPLACE</h4>
+  <br>
+  <p>Copy all of second parameter and change n'th index of first parameter. Just using with strings
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:name=hasanbly;
+  <br>
+  DEF:str:newWord=HAHAHA;
+  <br>
+  &lt&lt$:str:name_;
+  <br>
+  REPLACE[3] $:str:name_ $:str:newWord_;
+  <br>
+  &lt&lt$:str:name_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>hasanbly<br>hasHAHAHAnbly</i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>TERMINAL</h4>
+  <br>
+  <p>Runs bash and batch codes. Just one parameter and it can be string variable. But be carefull because you may get some errors and program will stop if you write wrong command.
+  <br>
+  <br>
+  <pre>
+  <i>
+  // example for Windows
+  <br>
+  DEF:str:myAwesomeCommand=dir;
+  <br>
+  // example for UNIX types
+  <br>
+  // DEF:str:myAwesomeCommand=ls;
+  <br>
+  TERMINAL $:str:command_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>[&ls your current folder contents &gt]</i></pre>
+  </p>
+</li>
 
 </ul>
 

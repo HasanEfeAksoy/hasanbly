@@ -10,7 +10,7 @@
 #include <algorithm>
 
 
-#define PI 3.14159265
+//#define PI 3.141592
 
 
 std::string get_os_name();
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 
 
         // get os name
-            std::string os_name = get_os_name() == "Windows" ? "Windows" : "UNIX";
+            std::string os_name = get_os_name() == "Windows" ? "Windows" : get_os_name();
         //
         
         interprete(text, lines, unInterpreteLines, stringVariables, intVariables, doubleVariables, os_name);
@@ -652,7 +652,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             else if (process == ".SIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = sin(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -660,7 +660,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".COS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -668,7 +668,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".TAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = tan(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = tan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -676,7 +676,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".COT") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2 * PI / 180) / sin(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2) / sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COT. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -685,7 +685,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             else if (process == ".ASIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = asin(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = asin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -693,7 +693,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".ACOS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = acos(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = acos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -701,7 +701,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".ATAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = atan(*double2 * PI / 180);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = atan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -711,7 +711,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             else if (process == ".ABS") {
                 // 1. int int
                 // 2. int dbl
-                // 3. dbl dbl
+                // 3. dbl int
                 // 4. dbl dbl
                 if (typeFirst == 1 && typeSecond == 1) *int1 = abs(*int2);
                 else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(abs(*double2));
@@ -1852,6 +1852,147 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 system("clear");
+            }
+        }
+
+        else if (lines[i][0] == 'O' && lines[i][1] == 'S' && lines[i][2] == 'N' && lines[i][3] == 'A' && lines[i][4] == 'M' && lines[i][5] == 'E' && lines[i][6] == ' ') {
+            
+            if (lines[i][7] != '$' || lines[i][8] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using OSNAME command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+            
+            std::string varName = "";
+            for (int j = 13; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
+            }
+
+            if (lines[i][9] == 's' && lines[i][10] == 't' && lines[i][11] == 'r' && lines[i][12] == ':') {
+                stringVariables.at(varName) = os_name;
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using :string: variable when using OSNAME command for call variables. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
+
+        else if (lines[i][0] == 'R' && lines[i][1] == 'E' && lines[i][2] == 'P' && lines[i][3] == 'L' && lines[i][4] == 'A'&& lines[i][5] == 'C' && lines[i][6] == 'E') {
+            if (lines[i][7] == '[' && lines[i][line_i_size - 1] == '_') { // ikinci koşul olmasının sebebi komutumuz _ ile bitmek zorunda ikinci parametre değişkendir ve _ ile biter.
+                int index = 0;
+                int afterIndexSpace = 0;
+                
+                if (lines[i][8] == '$' && lines[i][9] == ':' && lines[i][10] == 'i' && lines[i][11] == 'n' && lines[i][12] == 't' && lines[i][13] == ':') {
+                    std::string indexVarName = "";
+                    for (int j = 14; j < line_i_size; j++) {
+                        if (lines[i][j] != '_') {
+                            indexVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ']') {
+                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            afterIndexSpace = j + 2;
+                            break;
+                        }
+                    }
+                    index = intVariables.at(indexVarName);
+                }
+                else if (std::stoi(std::to_string(lines[i][8])) % 1 == 0) {
+                    std::string indexIntValue = "";
+                    bool isEnded = false;
+                    for (int j = 8; j < line_i_size; j++) {
+                        if (lines[i][j] == ']') {
+                            isEnded = true;
+                            afterIndexSpace = j + 1;
+                            break;
+                        }
+                        else {
+                            indexIntValue += lines[i][j];
+                        }
+                    }
+                    if (!isEnded) {
+                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
+                        exit(0);
+                    }
+                    index = std::stoi(indexIntValue);
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using REPLACE command's index. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+        
+                if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':' || lines[i][afterIndexSpace + 3] != 's' || lines[i][afterIndexSpace + 4] != 't' || lines[i][afterIndexSpace + 5] != 'r' || lines[i][afterIndexSpace + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+
+                std::string firstVarName = "";
+                std::string secondVarName = "";
+                bool isSwitch = false;
+                for (int j = afterIndexSpace + 7; j < line_i_size; j++) {
+                    if (isSwitch) {
+                        if (lines[i][j] != '_') {
+                            secondVarName += lines[i][j];
+                        }
+                        else {
+                            if (j != line_i_size - 1) {
+                                std::cout << "\nERROR:\nmessage: you have to using variable when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                        }
+                    }
+                    else {
+                        if (lines[i][j] != '_') {
+                            firstVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ' ' || lines[i][j + 2] != '$' || lines[i][j + 3] != ':' || lines[i][j + 4] != 's' || lines[i][j + 5] != 't' || lines[i][j + 6] != 'r' || lines[i][j + 7] != ':') {
+                                std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                                exit(0);
+                            }
+                            j += 7; // 8 yapmamız gerekirdi ancak for döngüsü tamamlanınca zaten +1 yapacak o yüzden 7
+                            isSwitch = true;
+                        }
+                    }
+                }
+
+
+                // ikinci parametrenin 0 veya daha fazla elemanlı string olma durumu.
+                if (stringVariables.at(secondVarName).size() == 0) {
+                    stringVariables.at(firstVarName).erase(index, 1);
+                }
+                else {
+                    stringVariables.at(firstVarName).replace(index, 1, stringVariables.at(secondVarName));
+                }
+
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'REPLACE[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
+
+        else if (lines[i][0] == 'T' && lines[i][1] == 'E' && lines[i][2] == 'R' && lines[i][3] == 'M' && lines[i][4] == 'I' && lines[i][5] == 'N' && lines[i][6] == 'A' && lines[i][7] == 'L' && lines[i][8] == ' ') {
+            
+            if (lines[i][9] != '$' || lines[i][10] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using TERMINAL command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+            
+            std::string varName = "";
+            for (int j = 15; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
+            }
+
+            if (lines[i][11] == 's' && lines[i][12] == 't' && lines[i][13] == 'r' && lines[i][14] == ':') {
+                system(stringVariables.at(varName).c_str());
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using :string: variable when using TERMINAL command for call variables. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
             }
         }
 

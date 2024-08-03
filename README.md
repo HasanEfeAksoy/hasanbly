@@ -567,6 +567,31 @@ EXIT;
 <br>
 
 <li>
+  <h4>OSNAME</h4>
+  <br>
+  <p>Assigns your current OS name to a string variable.
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:myOSname=;
+  <br>
+  OSNAME $:str:myOSname_;
+  <br>
+  &lt&lt$:str:myOSname_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>Windows</i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
   <h4>REPLACE</h4>
   <br>
   <p>Copy all of second parameter and change n'th index of first parameter. Just using with strings

@@ -1,8 +1,7 @@
-DEF:str:name=blabla1;
-DEF:int:blabla2=0;
+DEF:str:stopOnExit=;
 
 <<^$^$Hello World!^$^$;
 
-<<$:int:blabla2_;
+>$:str:stopOnExit_;
 
 EXIT;

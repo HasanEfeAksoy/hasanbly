@@ -1,9 +1,10 @@
 # hasanbly
 hasanbly basic scripting language
+<br> 
 <br>
+<b>current version 1.4</b>
 <br>
-<b>version 1.3</b>
-<br>
+[version 0.0, made on 05.10.2022]
 <br>
 if you want developing this project you can compile like this:
 <br>
@@ -107,6 +108,8 @@ EXIT;
   <h4>DEF</h4>
   <br>
   <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl).
+  <br>
+  [Camel case variables are preferred]
   <br>
   <br>
   <pre>
@@ -534,6 +537,32 @@ EXIT;
   <pre>output: <i>5</i></pre>
   </p>
 </li>
+
+<br>
+
+<li>
+  <h4>CLEAR</h4>
+  <br>
+  <p>Takes no parameters and clears the console.
+  <br>
+  <br>
+  <pre>
+  <i>
+  &lt&lt^$^$Hello World!^$^$;
+  <br>
+  CLEAR;
+  <br>
+  &lt&lt^$^$Hello World!^$^$;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>$$Hello World!$$</i></pre>
+  </p>
+</li>
+
 
 </ul>
 

@@ -13,7 +13,9 @@
 #define PI 3.14159265
 
 
-void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables);
+std::string get_os_name();
+void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables, std::string& os_name);
+
 int main(int argc, char** argv) {
     srand(time(NULL));
 
@@ -44,8 +46,13 @@ int main(int argc, char** argv) {
         std::unordered_map<std::string, std::string> stringVariables; // string unordered_mapi
         std::unordered_map<std::string, int> intVariables; // int unordered_mapi
         std::unordered_map<std::string, double> doubleVariables; // double unordered_mapi
+
+
+        // get os name
+            std::string os_name = get_os_name() == "Windows" ? "Windows" : "UNIX";
+        //
         
-        interprete(text, lines, unInterpreteLines, stringVariables, intVariables, doubleVariables);
+        interprete(text, lines, unInterpreteLines, stringVariables, intVariables, doubleVariables, os_name);
     }
     else {
         std::cout << "\nERROR:\nmessage: wrong input file type.\n";
@@ -54,7 +61,32 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables) {
+std::string get_os_name() {
+    std::string os_name;
+
+    // Linux ve MacOS için /etc/os-release dosyasını kontrol ediyoruz
+    std::ifstream file("/etc/os-release");
+    if (file.is_open()) {
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.find("NAME=") != std::string::npos) {
+                os_name = line.substr(line.find('=') + 2);
+                os_name.erase(os_name.find_last_not_of("\"") + 1); // Sonundaki çift tırnakları temizle
+                break;
+            }
+        }
+        file.close();
+    }
+
+    // Eğer Linux/MacOS tespit edemediysek Windows olarak kabul ediyoruz
+    if (os_name.empty()) {
+        os_name = "Windows";
+    }
+
+    return os_name;
+}
+
+void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables, std::string& os_name) {
     // unInterprete listine başlangıç değer ataması
     for (int i = 0; i < lines.size(); i++) {
         unInterpreteLines[i] = false;
@@ -139,7 +171,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
     */
     for (int i = 0; i < lines.size(); i++)
     {
-        // her yerde çağırmak yerine birkere yazalım
+        // her yerde çağırmak yerine bir kere yazalım
         size_t line_i_size = lines[i].size();
 
      
@@ -1813,6 +1845,15 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
         }
 
+
+        else if (lines[i][0] == 'C' && lines[i][1] == 'L' && lines[i][2] == 'E' && lines[i][3] == 'A' && lines[i][4] == 'R' && line_i_size == 5) { // clear console
+            if (os_name == "Windows") {
+                system("cls");
+            }
+            else {
+                system("clear");
+            }
+        }
 
 
         

@@ -67,7 +67,7 @@ EXIT;
   <i>
   // This is comment line
   <br>
-  // this lines will do not care by interpreter.
+  // These lines will be ignored by the interpreter.
   <br>
   EXIT;
   </i>

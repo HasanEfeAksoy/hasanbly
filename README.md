@@ -6,6 +6,7 @@ hasanbly basic scripting language
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
+<br>
 if you want developing this project you can compile like this:
 <br>
 <b><i><pre>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</pre></i></b>

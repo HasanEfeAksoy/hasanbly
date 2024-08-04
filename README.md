@@ -636,7 +636,7 @@ EXIT;
   <br>
   // DEF:str:myAwesomeCommand=ls;
   <br>
-  TERMINAL $:str:command_;
+  TERMINAL $:str:myAwesomeCommand_;
   <br>
   EXIT;
   </i>

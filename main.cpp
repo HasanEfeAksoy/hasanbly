@@ -3,17 +3,20 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <math.h>
+#include <cmath>
 #include <thread>
-#include <time.h>
+#include <ctime>
 #include <fstream>
 #include <algorithm>
 
 
-//#define PI 3.141592
+#define PI 3.141592
 
 
 std::string get_os_name();
+int factorial(int n);
+int combination(int n, int r);
+int permutation(int n, int r);
 void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables, std::string& os_name);
 
 int main(int argc, char** argv) {
@@ -85,6 +88,16 @@ std::string get_os_name() {
 
     return os_name;
 }
+int factorial(int n) {
+    return (n <= 1) ? 1 : n * factorial(n - 1);
+}
+int combination(int n, int r) {
+    return factorial(n) / (factorial(r) * factorial(n - r));
+}
+int permutation(int n, int r) {
+    return factorial(n) / factorial(n - r);
+}
+
 
 void interprete(std::string& text, std::vector<std::string>& lines, bool* unInterpreteLines, std::unordered_map<std::string, std::string>& stringVariables, std::unordered_map<std::string, int>& intVariables, std::unordered_map<std::string, double>& doubleVariables, std::string& os_name) {
     // unInterprete listine başlangıç değer ataması
@@ -652,7 +665,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             else if (process == ".SIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = sin(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -660,7 +673,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".COS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::cos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -668,7 +681,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".TAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = tan(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::tan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -676,16 +689,32 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".COT") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = cos(*double2) / sin(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::cos(*double2) / std::sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COT. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".SEC") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::cos(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SEC. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".CSC") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::sin(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CSC. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
 
             else if (process == ".ASIN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = asin(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::asin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASIN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -693,7 +722,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".ACOS") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = acos(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::acos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -701,22 +730,146 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else if (process == ".ATAN") {
                 // 1. dbl dbl
-                if (typeFirst == 2 && typeSecond == 2) *double1 = atan(*double2);
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::atan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATAN. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
+            else if (process == ".ACOT") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = PI / 2 - std::atan(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOT. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ASEC") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::acos(1.0 / *double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASEC. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ACSC") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::asin(1.0 / *double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACSC. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".SINH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::sinh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SINH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".COSH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::cosh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COSH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".TANH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::tanh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TANH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".COTH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::cosh(*double2) / std::sinh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COTH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".SECH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::cosh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SECH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".CSCH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::sinh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CSCH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ASINH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::asinh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASINH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ACOSH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::acosh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOSH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ATANH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::atanh(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATANH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ACOTH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = 0.5 * std::log((*double2 + 1) / (*double2 - 1));
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOTH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ASECH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::acosh(1.0 / *double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASECH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ACSCH") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::asinh(1.0 / *double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACSCH. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            
+
+
+
 
             else if (process == ".ABS") {
                 // 1. int int
                 // 2. int dbl
                 // 3. dbl int
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) *int1 = abs(*int2);
-                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(abs(*double2));
-                else if (typeFirst == 2 && typeSecond == 1) *double1 = abs(0.0 + *int2);
-                else if (typeFirst == 2 && typeSecond == 2) *double1 = abs(*double2);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = std::abs(*int2);
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(std::abs(*double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = std::abs(0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = std::abs(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ABS. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -725,12 +878,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             else if (process == ".SQRT") {
                 // 1. int int
                 // 2. int dbl
-                // 3. dbl dbl
+                // 3. dbl int
                 // 4. dbl dbl
-                if (typeFirst == 1 && typeSecond == 1) *int1 = static_cast<int>(sqrt(*int2));
-                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(sqrt(*double2));
-                else if (typeFirst == 2 && typeSecond == 1) *double1 = sqrt(0.0 + *int2);
-                else if (typeFirst == 2 && typeSecond == 2) *double1 = sqrt(*double2);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = static_cast<int>(std::sqrt(*int2));
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(std::sqrt(*double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = std::sqrt(0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = std::sqrt(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SQRT. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
@@ -739,18 +892,124 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             else if (process == ".POW") {
                 // 1. int int
                 // 2. int dbl
-                // 3. dbl dbl
+                // 3. dbl int
                 // 4. dbl dbl
                 // first param is x and second param is y -> (x = x to the y)
-                if (typeFirst == 1 && typeSecond == 1) *int1 = pow(*int1, *int2);
-                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(pow(*int1, *double2));
-                else if (typeFirst == 2 && typeSecond == 1) *double1 = pow(*double1, 0.0 + *int2);
-                else if (typeFirst == 2 && typeSecond == 2) *double1 = pow(*double1, *double2);
+                if (typeFirst == 1 && typeSecond == 1) *int1 = std::pow(*int1, *int2);
+                else if (typeFirst == 1 && typeSecond == 2) *int1 = static_cast<int>(std::pow(*int1, *double2));
+                else if (typeFirst == 2 && typeSecond == 1) *double1 = std::pow(*double1, 0.0 + *int2);
+                else if (typeFirst == 2 && typeSecond == 2) *double1 = std::pow(*double1, *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.POW. line:" << std::to_string(i + 1) << "\n";
                     exit(0);
                 }
             }
+            else if (process == ".LN") {
+                // 1. dbl dbl
+                // 2. dbl int
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::log(*double2);
+                if (typeFirst == 2 && typeSecond == 1) *double1 = std::log(*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.LN. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".LOG") {
+                // 1. dbl dbl
+                // 2. dbl int
+                // 3. int int
+                // 4. int dbl
+                // first param is x and second param is y -> (x = logx(y))
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::log(*double2) / std::log(*double1);
+                if (typeFirst == 2 && typeSecond == 1) *double1 = std::log(*int2) / std::log(*double1);
+                if (typeFirst == 1 && typeSecond == 1) *double1 = std::log(*int2) / std::log(*int1);
+                if (typeFirst == 1 && typeSecond == 2) *double1 = std::log(*double2) / std::log(*int1);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.LOG. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".EXP") {
+                // 1. dbl dbl
+                // 1. dbl int
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::exp(*double2);
+                if (typeFirst == 2 && typeSecond == 1) *double1 = std::exp(*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.EXP. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".ROUND") {
+                // 1. dbl dbl
+                // 2. int dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::round(*double2);
+                if (typeFirst == 1 && typeSecond == 2) *int1 = std::round(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ROUND. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".CEIL") {
+                // 1. dbl dbl
+                // 2. int dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::ceil(*double2);
+                if (typeFirst == 1 && typeSecond == 2) *int1 = std::ceil(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CEIL. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".FLOOR") {
+                // 1. dbl dbl
+                // 2. int dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = std::floor(*double2);
+                if (typeFirst == 1 && typeSecond == 2) *int1 = std::floor(*double2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.FLOOR. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".FACT") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = factorial(*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.FACT. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".PERM") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = permutation(*int1, *int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.PERM. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".COMB") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = combination(*int1, *int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COMB. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".DEG2RAD") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = (*double2 / 180) * PI;
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.DEG2RAD. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            else if (process == ".RAD2DEG") {
+                // 1. dbl dbl
+                if (typeFirst == 2 && typeSecond == 2) *double1 = (*double2 / PI) * 180;
+                else {
+                    std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.RAD2DEG. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+            }
+            
             
 
             else {

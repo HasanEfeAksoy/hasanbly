@@ -1,7 +1,3 @@
-DEF:str:stopOnExit=;
-
 <<^$^$Hello World!^$^$;
-
->$:str:stopOnExit_;
 
 EXIT;

@@ -213,7 +213,7 @@ EXIT;
 <li>
   <h4>M</h4>
   <br>
-  <p>You can using math operators like = + - * / %, basic trigonometric processes ex.(M.SIN $:dbl:myNum1_ $:dbl:myNum2_;) [note : just for radians double variables], M.ABS, M.POW, M.SQRT.
+  <p>You can using math operators like = + - * / %, trigonometric processes ex.(M.SIN $:dbl:myNum1_ $:dbl:myNum2_;) [note : just for radians double variables], M.ABS, M.POW, M.SQRT, M.ROUND, etc.
   <br>
   But you have to using variables. You can convert type of variables with use M= command.
   <br>

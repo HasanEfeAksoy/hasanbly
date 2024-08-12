@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br> 
 <br>
-<b>current version 1.4</b>
+<b>current version 1.5</b>
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
@@ -646,6 +646,32 @@ EXIT;
   <pre>output: <i>[&lt your current folder contents &gt]</i></pre>
   </p>
 </li>
+
+<br>
+
+<li>
+  <h4>TIME</h4>
+  <br>
+  <p>Returns current time. Just one parameter and it can be integer variable. There is 3 commands of TIME (.SECONDS .MINUTES .HOURS). 
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:int:time=0;
+  <br>
+  TIME.MINUTES $:int:time_;
+  <br>
+  &lt&lt$:int:time_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>26</i></pre>
+  </p>
+</li>
+
 
 </ul>
 

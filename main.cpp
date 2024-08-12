@@ -1,3 +1,20 @@
+/*
+
+
+        AUTHOR:
+    
+    HASAN EFE AKSOY
+
+
+        VERSION:
+
+          1.5
+
+
+*/
+
+
+
 #include <iostream>
 //#include <stdlib.h>
 #include <string>
@@ -2254,6 +2271,55 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 exit(0);
             }
         }
+
+
+        else if (lines[i][0] == 'T' && lines[i][1] == 'I' && lines[i][2] == 'M' && lines[i][3] == 'E' && lines[i][4] == '.') {
+            
+            std::string timeCmd = "";
+            int ind = 6;
+            for (int j = 5; lines[i][j] != ' '; j++) {
+                timeCmd += lines[i][j];
+                ind++;
+            }
+
+            if (lines[i][ind - 1] != ' ' || lines[i][ind] != '$' || lines[i][ind + 1] != ':' || lines[i][ind + 2] != 'i' || lines[i][ind + 3] != 'n' || lines[i][ind + 4] != 't' || lines[i][ind + 5] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :int: variable when using TIME command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+
+            ind += 6;
+
+            std::string varName = "";
+            for (int j = ind; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
+            }
+
+
+            std::time_t now = std::time(nullptr);
+            std::tm* now_tm = std::localtime(&now);
+
+
+            if (timeCmd == "SECONDS") {
+                int seconds = now_tm->tm_sec;
+                intVariables.at(varName) = seconds;
+            }
+            else if (timeCmd == "MINUTES") {
+                int minutes = now_tm->tm_min;
+                intVariables.at(varName) = minutes;
+            }
+            else if (timeCmd == "HOURS") {
+                int hours = now_tm->tm_hour;
+                intVariables.at(varName) = hours;
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using time commands and have to using :int: variable when using TIME command for call variables. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
+
+
+
 
 
         

@@ -672,6 +672,39 @@ EXIT;
   </p>
 </li>
 
+<br>
+
+<li>
+  <h4>CLAMP</h4>
+  <br>
+  <p>Clamp value from first and second parameters to last 2 parameters range. Need 5 parameters and have to be double variables. 1) value 2) first min range 3) first max range 4) second min range 5) second max range. 
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:dbl:value=2;
+  <br>
+  DEF:dbl:a=0;
+  <br>
+  DEF:dbl:b=10;
+  <br>
+  DEF:dbl:c=0;
+  <br>
+  DEF:dbl:d=100;
+  <br>
+  <br>
+  CLAMP $:dbl:value_ $:dbl:a_ $:dbl:b_ $:dbl:c_ $:dbl:d_;
+  <br>
+  &lt&lt$:dbl:value_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>20</i></pre>
+  </p>
+</li>
 
 </ul>
 

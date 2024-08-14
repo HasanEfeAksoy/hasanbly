@@ -2321,6 +2321,89 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
 
 
+        else if (lines[i][0] == 'C' && lines[i][1] == 'L' && lines[i][2] == 'A' && lines[i][3] == 'M' && lines[i][4] == 'P' && lines[i][5] == ' ') {
+            if (lines[i][6] == '$' && lines[i][7] == ':' && lines[i][8] == 'd' && lines[i][9] == 'b' && lines[i][10] == 'l' && lines[i][11] == ':' && lines[i][line_i_size - 1] == '_') {
+                std::string varName = "";
+                std::string varNameMinValue1 = "";
+                std::string varNameMaxValue1 = "";
+                std::string varNameMinValue2 = "";
+                std::string varNameMaxValue2 = "";
+                int whereIsJ = 12;
+
+                for (int j = 12; lines[i][j] != '_'; j++) {
+                    varName += lines[i][j];
+                    whereIsJ++;
+                }
+                whereIsJ++;
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+
+                for (int j = whereIsJ; lines[i][j] != '_'; j++) {
+                    varNameMinValue1 += lines[i][j];
+                    whereIsJ++;
+                }
+                whereIsJ++;
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+
+                for (int j = whereIsJ; lines[i][j] != '_'; j++) {
+                    varNameMaxValue1 += lines[i][j];
+                    whereIsJ++;
+                }
+                whereIsJ++;
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+
+                for (int j = whereIsJ; lines[i][j] != '_'; j++) {
+                    varNameMinValue2 += lines[i][j];
+                    whereIsJ++;
+                }
+                whereIsJ++;
+                if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
+                    exit(0);
+                }
+                whereIsJ += 7;
+
+
+                for (int j = whereIsJ; lines[i][j] != '_'; j++) {
+                    varNameMaxValue2 += lines[i][j];
+                    whereIsJ++;
+                }
+
+
+                double value = doubleVariables.at(varName);
+                double a = doubleVariables.at(varNameMinValue1);
+                double b = doubleVariables.at(varNameMaxValue1);
+                double c = doubleVariables.at(varNameMinValue2);
+                double d = doubleVariables.at(varNameMaxValue2);
+                
+                double result = 0.0;
+
+                value = (value - a) / (b - a);
+                result = c + value * (d - c);
+
+                doubleVariables.at(varName) = result;
+
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
+                exit(0);
+            }
+        }
+
 
         
         // under devolopment

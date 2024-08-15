@@ -1,4 +1,6 @@
 /*
+        HASANBLY
+
 
 
         AUTHOR:
@@ -6,9 +8,39 @@
     HASAN EFE AKSOY
 
 
+
         VERSION:
 
           1.5
+
+
+
+
+        COMMANDS:
+
+        <
+        <<
+        >
+        DEF
+        M
+        GOTO
+        EXIT
+        IF
+        INC
+        DEC
+        NULL
+        FREE
+        INDEX
+        SLEEP
+        RAND
+        STRLEN
+        CLEAR
+        OSNAME
+        REPLACE
+        TERMINAL
+        TIME
+        CLAMP
+
 
 
 */
@@ -69,16 +101,18 @@ int main(int argc, char** argv) {
 
 
         // get os name
-            std::string os_name = get_os_name() == "Windows" ? "Windows" : get_os_name();
+            std::string os_name = get_os_name();
         //
         
         interprete(text, lines, unInterpreteLines, stringVariables, intVariables, doubleVariables, os_name);
+
+        delete[] unInterpreteLines;
+        return 0;
     }
     else {
         std::cout << "\nERROR:\nmessage: wrong input file type.\n";
         return 0;
     }
-    return 0;
 }
 
 std::string get_os_name() {
@@ -169,7 +203,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
         
         if (lines[i][lines[i].size() - 1] != ';') { // satırın ; ile bitip bitmediğini kontrol ediyoruz.
             std::cout << "\nERROR:\nmessage: missing semicolon. line:" << std::to_string(i + 1) << "\n";
-            exit(0);
+            return;
         }
         else {
             lines[i].pop_back(); // sondaki noktalı virgülü siliyoruz.
@@ -186,7 +220,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
         if (lines[i].size() != 4 || lines[i][0] != 'E' || lines[i][1] != 'X' || lines[i][2] != 'I' || lines[i][3] != 'T') { // sonda exit var mı diye kontrol ediyoruz yoksa error
             std::cout << "\nERROR:\nmessage: program needs EXIT command at the end of the program.\n";
-            exit(0);
+            return;
         }
         else {
             break; // sonda EXIT kullanmış demek oluyor.
@@ -261,12 +295,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                         else {
                             std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: need '$:type:varName_' to call variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                 }
             } //->değişkenlerin değerlerini metinde yerleştiriyoruz-----
@@ -285,7 +319,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
         else if (lines[i][0] == '>') { // input aldırmak için
             if (lines[i][1] != '$' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: > command need a variable. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             std::string in = "";
@@ -305,12 +339,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you call it. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else {
                 std::cout << "\nERROR:\nmessage: need '$:type:varName_' to call variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             std::string varName = "";
@@ -345,7 +379,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         if (lines[i][j] != '=') {
                             if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
                                 std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             else {
                                 name += lines[i][j];
@@ -361,7 +395,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     stringVariables.at(name);
                     // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
                     std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 catch(const std::exception& e) {
                     stringVariables.insert(std::pair<std::string, std::string>(name, value));
@@ -376,7 +410,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         if (lines[i][j] != '=') {
                             if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
                                 std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             else {
                                 name += lines[i][j];
@@ -392,7 +426,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     intVariables.at(name);
                     // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
                     std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 catch(const std::exception& e) {
                     intVariables.insert(std::pair<std::string, int>(name, std::stoi(value)));
@@ -407,7 +441,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         if (lines[i][j] != '=') {
                             if (lines[i][j] == ' ' || lines[i][j] == '_' || lines[i][j] == '_' || lines[i][j] == '\"' || lines[i][j] == '\'' || lines[i][j] == '\\' || lines[i][j] == '^' || lines[i][j] == '!' || lines[i][j] == '+' || lines[i][j] == '-' || lines[i][j] == '*' || lines[i][j] == '/' || lines[i][j] == '%' || lines[i][j] == '&' || lines[i][j] == '(' || lines[i][j] == ')' || lines[i][j] == '=' || lines[i][j] == '#' || lines[i][j] == '$' || lines[i][j] == '?' || lines[i][j] == '{' || lines[i][j] == '}' || lines[i][j] == '[' || lines[i][j] == ']' || lines[i][j] == '@' || lines[i][j] == ',' || lines[i][j] == '.' || lines[i][j] == ';' || lines[i][j] == '<' || lines[i][j] == '>') {
                                 std::cout << "\nERROR:\nmessage: weird chars detected while you define variable. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             else {
                                 name += lines[i][j];
@@ -423,7 +457,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     doubleVariables.at(name);
                     // hata veriyorsa yani öyle bir key yoksa catch e düşecek ve hatasız olacak ama böyle bir key varsa already exist hatası verecek.
                     std::cout << "\nERROR:\nmessage: variable name is already exist. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 catch(const std::exception& e) {
                     doubleVariables.insert(std::pair<std::string, double>(name, std::stod(value)));
@@ -431,7 +465,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you define it. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }            
         }
         else if (lines[i][0] == 'M') {
@@ -460,7 +494,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             if (lines[i][processSize + 1] != ' ' || lines[i][processSize + 2] != '$') {
                 std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             // $ içinde verilen indexe ulaşma.
@@ -480,7 +514,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                         else {
                             std::cout << "\nERROR:\nmessage: need a variable when using M command. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                     }
                 }
@@ -505,12 +539,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                                 }
                                 else {
                                     std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
-                                    exit(0);
+                                    return;
                                 }
                             }
                             else {
                                 std::cout << "\nERROR:\nmessage: need '$:type:varName_' for type when you using a variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                         }
                         else {
@@ -538,12 +572,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                                 }
                                 else {
                                     std::cout << "\nERROR:\nmessage: need :str: or :int: or :dbl: type of variable when you using it. line:" << std::to_string(i + 1) << "\n";
-                                    exit(0);
+                                    return;
                                 }
                             }
                             else {
                                 std::cout << "\nERROR:\nmessage: need '$:type:varName_' for type when you using a variable you may forgot ':'. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                         }
                         else {
@@ -599,7 +633,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 = *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M=. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == "+") {
@@ -623,7 +657,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 += *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M+. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == "-") {
@@ -637,7 +671,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 -= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage:found incompatible variable types when using M-. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
 
             }
@@ -652,7 +686,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 *= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M*. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == "/") {
@@ -666,7 +700,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 /= *double2;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M/. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == "%") {
@@ -676,7 +710,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 1 && typeSecond == 2) *int1 %= static_cast<int>(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M%. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
 
@@ -685,7 +719,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SIN. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".COS") {
@@ -693,7 +727,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::cos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COS. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".TAN") {
@@ -701,7 +735,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::tan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TAN. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".COT") {
@@ -709,7 +743,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::cos(*double2) / std::sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COT. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".SEC") {
@@ -717,7 +751,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::cos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SEC. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".CSC") {
@@ -725,7 +759,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::sin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CSC. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
 
@@ -734,7 +768,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::asin(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASIN. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACOS") {
@@ -742,7 +776,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::acos(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOS. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ATAN") {
@@ -750,7 +784,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::atan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATAN. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACOT") {
@@ -758,7 +792,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = PI / 2 - std::atan(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOT. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ASEC") {
@@ -766,7 +800,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::acos(1.0 / *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASEC. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACSC") {
@@ -774,7 +808,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::asin(1.0 / *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACSC. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".SINH") {
@@ -782,7 +816,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::sinh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SINH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".COSH") {
@@ -790,7 +824,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::cosh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COSH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".TANH") {
@@ -798,7 +832,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::tanh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.TANH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".COTH") {
@@ -806,7 +840,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::cosh(*double2) / std::sinh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COTH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".SECH") {
@@ -814,7 +848,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::cosh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SECH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".CSCH") {
@@ -822,7 +856,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 1.0 / std::sinh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CSCH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ASINH") {
@@ -830,7 +864,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::asinh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASINH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACOSH") {
@@ -838,7 +872,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::acosh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOSH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ATANH") {
@@ -846,7 +880,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::atanh(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ATANH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACOTH") {
@@ -854,7 +888,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = 0.5 * std::log((*double2 + 1) / (*double2 - 1));
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACOTH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ASECH") {
@@ -862,7 +896,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::acosh(1.0 / *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ASECH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ACSCH") {
@@ -870,7 +904,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = std::asinh(1.0 / *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ACSCH. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             
@@ -889,7 +923,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 = std::abs(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ABS. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".SQRT") {
@@ -903,7 +937,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 = std::sqrt(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.SQRT. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".POW") {
@@ -918,7 +952,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 else if (typeFirst == 2 && typeSecond == 2) *double1 = std::pow(*double1, *double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.POW. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".LN") {
@@ -928,7 +962,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 1) *double1 = std::log(*int2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.LN. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".LOG") {
@@ -943,7 +977,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 2) *double1 = std::log(*double2) / std::log(*int1);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.LOG. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".EXP") {
@@ -953,7 +987,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 1) *double1 = std::exp(*int2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.EXP. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".ROUND") {
@@ -963,7 +997,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 2) *int1 = std::round(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.ROUND. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".CEIL") {
@@ -973,7 +1007,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 2) *int1 = std::ceil(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.CEIL. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".FLOOR") {
@@ -983,7 +1017,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 2) *int1 = std::floor(*double2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.FLOOR. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".FACT") {
@@ -991,7 +1025,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 1) *int1 = factorial(*int2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.FACT. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".PERM") {
@@ -999,7 +1033,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 1) *int1 = permutation(*int1, *int2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.PERM. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".COMB") {
@@ -1007,7 +1041,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 1 && typeSecond == 1) *int1 = combination(*int1, *int2);
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.COMB. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".DEG2RAD") {
@@ -1015,7 +1049,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = (*double2 / 180) * PI;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.DEG2RAD. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else if (process == ".RAD2DEG") {
@@ -1023,7 +1057,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 if (typeFirst == 2 && typeSecond == 2) *double1 = (*double2 / PI) * 180;
                 else {
                     std::cout << "\nERROR:\nmessage: found incompatible variable types when using M.RAD2DEG. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             
@@ -1031,7 +1065,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             else {
                 std::cout << "\nERROR:\nmessage: false math operator. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
         
@@ -1046,20 +1080,20 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: You have to using pure integer number while using GOTO. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             int integerNumberOfLineNumber = std::stoi(lineNumber);
             if (integerNumberOfLineNumber < 1 || integerNumberOfLineNumber > lines.size()) {
                 std::cout << "\nERROR:\nmessage: Line cannot found. It can be too big or too small. line:" << std::to_string(i + 1) << "\n";
-                exit(0);    
+                return;    
             }
 
             i = integerNumberOfLineNumber - 2; //go to i. satır
             continue;
         }
         else if (lines[i][0] == 'E' && lines[i][1] == 'X' && lines[i][2] == 'I' && lines[i][3] == 'T' && line_i_size == 4) { // stop program
-            exit(0);
+            return;
         }
 
         else if (lines[i][0] == 'I' && lines[i][1] == 'F') { // if condition
@@ -1112,12 +1146,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using just string-string when using string in IF condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // int
@@ -1166,7 +1200,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: you have to using int-int or double-double when using numeric values in IF condition. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
 
                     if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == '=') {
@@ -1176,7 +1210,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                 }
             }
@@ -1228,7 +1262,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: you have to using int-int or double-double when using numeric values in IF condition. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
 
                     if (lines[i][whereSecondEnded] == ' ' && lines[i][whereSecondEnded + 1] == 'E' && lines[i][whereSecondEnded + 2] == 'L' && lines[i][whereSecondEnded + 3] == 'S' && lines[i][whereSecondEnded + 4] == 'E' && lines[i][whereSecondEnded + 5] == '=') {
@@ -1238,7 +1272,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     else {
                         std::cout << "\nERROR:\nmessage: you have to using ELSE=<pure integer> end of the IF condition. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                 }
             }
@@ -1264,7 +1298,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";;
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1284,7 +1318,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1304,7 +1338,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1312,7 +1346,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using string-string or int-int or double-double in IF== condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // !=
@@ -1335,7 +1369,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1356,7 +1390,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1377,7 +1411,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1385,7 +1419,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using string-string or int-int or double-double in IF!= condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // >
@@ -1409,7 +1443,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1430,7 +1464,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1451,7 +1485,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1472,7 +1506,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1480,7 +1514,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int-int/double or double-double/int in IF>> condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // >=
@@ -1504,7 +1538,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1525,7 +1559,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1546,7 +1580,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1567,7 +1601,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1575,7 +1609,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int-int/double or double-double/int in IF>= condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // <
@@ -1599,7 +1633,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1620,7 +1654,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1641,7 +1675,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1662,7 +1696,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1670,7 +1704,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int-int/double or double-double/int in IF<< condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             // <=
@@ -1694,7 +1728,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1715,7 +1749,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1736,7 +1770,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1757,7 +1791,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         int int_ElseLineNumber = std::stoi(elseLineNumber);
                         if (int_ElseLineNumber > lines.size() || int_ElseLineNumber < 1) {
                             std::cout << "\nERROR:\nmessage: line can not found. maybe its too big or too small. error in IF condition ELSE=. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         i = int_ElseLineNumber - 2;
                         continue;
@@ -1765,13 +1799,13 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int-int/double or double-double/int in IF<= condition. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
 
             else {
                 std::cout << "\nERROR:\nmessage: you have to using == != >> >= << <= in IF condition. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
         
@@ -1795,12 +1829,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int or double variable types when using INC command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using variable when using INC command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
         else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'C' && lines[i][3] == ' ') {
@@ -1822,12 +1856,12 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to using int or double variable types when using DEC command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using variable when using DEC command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -1836,7 +1870,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             
             if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a variable when using NULL command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             std::string varName = "";
@@ -1852,7 +1886,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 doubleVariables.at(varName) = 0.0;
             else {
                 std::cout << "\nERROR:\nmessage: you have to using :int: or :string: or :double: variable when using NULL command for call variables. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -1860,7 +1894,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             
             if (lines[i][5] != '$' || lines[i][6] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a variable when using FREE command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             std::string varName = "";
@@ -1882,7 +1916,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using string or int or double variable when using NULL command for call variables. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -1900,7 +1934,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (lines[i][j + 1] != ']') {
                                 std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using INDEX command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             afterIndexSpace = j + 2;
                             break;
@@ -1923,18 +1957,18 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     if (!isEnded) {
                         std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                     index = std::stoi(indexIntValue);
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using INDEX command's index. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
         
                 if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':' || lines[i][afterIndexSpace + 3] != 's' || lines[i][afterIndexSpace + 4] != 't' || lines[i][afterIndexSpace + 5] != 'r' || lines[i][afterIndexSpace + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
 
                 std::string firstVarName = "";
@@ -1948,7 +1982,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (j != line_i_size - 1) {
                                 std::cout << "\nERROR:\nmessage: you have to using variable when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                         }
                     }
@@ -1959,7 +1993,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (lines[i][j + 1] != ' ' || lines[i][j + 2] != '$' || lines[i][j + 3] != ':' || lines[i][j + 4] != 's' || lines[i][j + 5] != 't' || lines[i][j + 6] != 'r' || lines[i][j + 7] != ':') {
                                 std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             j += 7; // 8 yapmamız gerekirdi ancak for döngüsü tamamlanınca zaten +1 yapacak o yüzden 7
                             isSwitch = true;
@@ -1972,7 +2006,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to put '[' in 'INDEX[<int>]' when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -1994,7 +2028,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using SLEEP command's millisecond parameter. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
             // main fonksiyonumuzun threadinde yani genel bir threadde bekletiyoruz.
             std::this_thread::sleep_for(std::chrono::milliseconds(millisecond));
@@ -2019,7 +2053,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command or you may forgot put space between parameters of RAND command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2035,7 +2069,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command or you may forgot put space between parameters of RAND command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2047,7 +2081,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     else {
                         if (j != line_i_size - 1) {
                             std::cout << "\nERROR:\nmessage: you have to using integer variables when using RAND command. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         //whereIsJ = j + 1; // ' '
                         break;
@@ -2059,7 +2093,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
                 if (max < min) {
                     std::cout << "\nERROR:\nmessage: second parameter can not greater than third parameter when using RAND command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
 
                 int randomNumber = rand() % (max + 1 - min) + min;
@@ -2069,7 +2103,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to use integer variable when using RAND command (RAND $:int:dest_ $:int:min_ $:int:max_;). line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2092,7 +2126,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 }
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'i' || lines[i][whereIsJ + 4] != 'n' || lines[i][whereIsJ + 5] != 't' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command or you may forgot put space between parameters of STRLEN command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2104,7 +2138,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     else {
                         if (j != line_i_size - 1) {
                             std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command or you may forgot put space between parameters of STRLEN command. line:" << std::to_string(i + 1) << "\n";
-                            exit(0);
+                            return;
                         }
                         //whereIsJ = j + 1; // ' '
                         break;
@@ -2117,7 +2151,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using for parameters (first: str, second: int) (string, int) variables when using STRLEN command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2135,7 +2169,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             
             if (lines[i][7] != '$' || lines[i][8] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using OSNAME command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
             
             std::string varName = "";
@@ -2148,7 +2182,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using :string: variable when using OSNAME command for call variables. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2167,7 +2201,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (lines[i][j + 1] != ']') {
                                 std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             afterIndexSpace = j + 2;
                             break;
@@ -2190,18 +2224,18 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                     if (!isEnded) {
                         std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
-                        exit(0);
+                        return;
                     }
                     index = std::stoi(indexIntValue);
                 }
                 else {
                     std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using REPLACE command's index. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
         
                 if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':' || lines[i][afterIndexSpace + 3] != 's' || lines[i][afterIndexSpace + 4] != 't' || lines[i][afterIndexSpace + 5] != 'r' || lines[i][afterIndexSpace + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
 
                 std::string firstVarName = "";
@@ -2215,7 +2249,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (j != line_i_size - 1) {
                                 std::cout << "\nERROR:\nmessage: you have to using variable when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                         }
                     }
@@ -2226,7 +2260,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         else {
                             if (lines[i][j + 1] != ' ' || lines[i][j + 2] != '$' || lines[i][j + 3] != ':' || lines[i][j + 4] != 's' || lines[i][j + 5] != 't' || lines[i][j + 6] != 'r' || lines[i][j + 7] != ':') {
                                 std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
-                                exit(0);
+                                return;
                             }
                             j += 7; // 8 yapmamız gerekirdi ancak for döngüsü tamamlanınca zaten +1 yapacak o yüzden 7
                             isSwitch = true;
@@ -2246,7 +2280,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to put '[' in 'REPLACE[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2255,7 +2289,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             
             if (lines[i][9] != '$' || lines[i][10] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using TERMINAL command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
             
             std::string varName = "";
@@ -2268,7 +2302,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using :string: variable when using TERMINAL command for call variables. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2284,7 +2318,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
             if (lines[i][ind - 1] != ' ' || lines[i][ind] != '$' || lines[i][ind + 1] != ':' || lines[i][ind + 2] != 'i' || lines[i][ind + 3] != 'n' || lines[i][ind + 4] != 't' || lines[i][ind + 5] != ':' || lines[i][line_i_size - 1] != '_') {
                 std::cout << "\nERROR:\nmessage: you have to using a :int: variable when using TIME command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
 
             ind += 6;
@@ -2313,7 +2347,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to using time commands and have to using :int: variable when using TIME command for call variables. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2337,7 +2371,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 whereIsJ++;
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2349,7 +2383,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 whereIsJ++;
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2361,7 +2395,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 whereIsJ++;
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2373,7 +2407,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                 whereIsJ++;
                 if (lines[i][whereIsJ] != ' ' || lines[i][whereIsJ + 1] != '$' || lines[i][whereIsJ + 2] != ':' || lines[i][whereIsJ + 3] != 'd' || lines[i][whereIsJ + 4] != 'b' || lines[i][whereIsJ + 5] != 'l' || lines[i][whereIsJ + 6] != ':') {
                     std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
-                    exit(0);
+                    return;
                 }
                 whereIsJ += 7;
 
@@ -2400,7 +2434,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             else {
                 std::cout << "\nERROR:\nmessage: you have to use double variable when using CLAMP command. line:" << std::to_string(i + 1) << "\n";
-                exit(0);
+                return;
             }
         }
 
@@ -2410,7 +2444,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
         else
         {
             std::cout << "ERROR!\nmessage: wrong command. line:" << std::to_string(i + 1) << "\n";
-            exit(0);
+            return;
         }
     }
 }

@@ -706,6 +706,31 @@ EXIT;
   </p>
 </li>
 
+<br>
+
+<li>
+  <h4>ADD</h4>
+  <br>
+  <p>Add escape chars (which is \n \t \r) to a string.
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:myStr=hello;
+  <br>
+  ADD\n $:str:myStr_;
+  <br>
+  &lt&lt$:str:myStr_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>hello<br></i></pre>
+  </p>
+</li>
+
 </ul>
 
 <br>

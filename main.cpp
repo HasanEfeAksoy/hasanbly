@@ -2439,6 +2439,44 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
         }
 
 
+
+        else if (lines[i][0] == 'A' && lines[i][1] == 'D' && lines[i][2] == 'D' && lines[i][3] == '\\' && lines[i][4] != ' ' && lines[i][5] == ' ') {
+            if (lines[i][6] != '$' || lines[i][7] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using ADD command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+            
+            std::string varName = "";
+            for (int j = 12; j < line_i_size - 1; j++) {
+                varName += lines[i][j];
+            }
+
+            if (lines[i][8] == 's' && lines[i][9] == 't' && lines[i][10] == 'r' && lines[i][11] == ':') {
+                
+                if (lines[i][4] == 'n') {
+                    stringVariables.at(varName) += '\n';                    
+                }
+                else if (lines[i][4] == 't') {
+                    stringVariables.at(varName) += '\t';
+                }
+                else if (lines[i][4] == 'r') {
+                    stringVariables.at(varName) += '\r';
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using just \\n \\t \\r parameters when using ADD command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to using :string: variable when using ADD command for call variables. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+
+
+
         
         // under devolopment
         else

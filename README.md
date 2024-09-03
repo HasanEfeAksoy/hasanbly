@@ -110,7 +110,17 @@ EXIT;
   <br>
   <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl).
   <br>
+  Valid escape chars (\n \t \r \v \0 \' \" \\ \? \a \b \f) are usable in strings.
+  <br>
   [Camel case variables are preferred]
+  <br>
+  <br>
+  For call a variable use $:&lttype&gt:&ltvariableName&gt_
+  <br>
+  If you call undefined variable, its a possible that you will get an error like "undefined variable" or like ->
+  <br>
+  terminate called after throwing an instance of 'std::out_of_range'
+  what():  _Map_base::at
   <br>
   <br>
   <pre>
@@ -668,7 +678,7 @@ EXIT;
   </pre>
   <br>
   <br>
-  <pre>output: <i>26</i></pre>
+  <pre>output: <i>26<br></i></pre>
   </p>
 </li>
 
@@ -702,23 +712,23 @@ EXIT;
   </pre>
   <br>
   <br>
-  <pre>output: <i>20</i></pre>
+  <pre>output: <i>20<br></i></pre>
   </p>
 </li>
 
 <br>
 
 <li>
-  <h4>ADD</h4>
+  <h4>ADDESCAPE</h4>
   <br>
-  <p>Add escape chars (which is \n \t \r) to a string.
+  <p>Add escape chars (which is \n \t \r \v \0 \' \" \\ \? \a \b \f) to a string.
   <br>
   <br>
   <pre>
   <i>
   DEF:str:myStr=hello;
   <br>
-  ADD\n $:str:myStr_;
+  ADDESCAPE\n $:str:myStr_;
   <br>
   &lt&lt$:str:myStr_;
   <br>
@@ -727,7 +737,140 @@ EXIT;
   </pre>
   <br>
   <br>
-  <pre>output: <i>hello<br><br></i></pre>
+  <pre>output: <i>hello<br></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>OPENFILE</h4>
+  <br>
+  <p>Open the file which is given string variable at parameter. If file already exist, file content will be delete.
+  <br>
+  (parameter have to be string variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:fileName=myfile.txt;
+  <br>
+  OPENFILE $:str:fileName_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>DELETEFILE</h4>
+  <br>
+  <p>Delete the file which is given string variable at parameter.
+  <br>
+  (parameter have to be string variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:fileName=myfile.txt;
+  <br>
+  DELETEFILE $:str:fileName_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>READFILE</h4>
+  <br>
+  <p>Read the file which is given string variable at first parameter. Get file content and set to second parameter.
+  <br>
+  (parameters have to be string variables)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:fileName=myfile.txt;
+  <br>
+  DEF:str:contentOfFile=;
+  <br>
+  READFILE $:str:fileName_ $:str:contentOfFile_;
+  <br>
+  &lt$:str:contentOfFile_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>Hello! I am content of file :)<br></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>OVERWRITEFILE</h4>
+  <br>
+  <p>Delete current content of file which is given string variable at first parameter. Write new content which is second parameter.
+  <br>
+  (parameters have to be string variables)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:fileName=myfile.txt;
+  <br>
+  DEF:str:newContent=Hello.\nThe new content is here.;
+  <br>
+  OVERWRITEFILE $:str:fileName_ $:str:newContent_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>APPENDWRITEFILE</h4>
+  <br>
+  <p>Protect current content of file which is given string variable at first parameter. Append new content which is second parameter.
+  <br>
+  (parameters have to be string variables)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:str:fileName=myfile.txt;
+  <br>
+  DEF:str:content=\nHello.\nAppended content here;
+  <br>
+  APPENDWRITEFILE $:str:fileName_ $:str:content_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i></i></pre>
   </p>
 </li>
 

@@ -40,9 +40,12 @@
         TERMINAL
         TIME
         CLAMP
-
-
-
+        ADDESCAPE
+        OPENFILE
+        DELETEFILE
+        READFILE
+        OVERWRITEFILE
+        APPENDWRITEFILE
 */
 
 
@@ -57,6 +60,7 @@
 #include <ctime>
 #include <fstream>
 #include <algorithm>
+#include <cstdio>
 
 
 #define PI 3.141592
@@ -83,7 +87,7 @@ int main(int argc, char** argv) {
         std::string newText = "";
         std::ifstream file(input);
         if (!file) {
-            std::cout << "\nERROR:\nmessage: input file don't exist.\n";
+            std::cout << "\nERROR:\nmessage: input file does not exist.\n";
             return 0;
         }
 
@@ -373,7 +377,44 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             if (lines[i][4] == 's' && lines[i][5] == 't' && lines[i][6] == 'r' && lines[i][7] == ':') {
                 for (int j = 8; j < line_i_size; j++) {
                     if (isReadedName) {
-                        value += lines[i][j];
+
+                        //
+                        // escape catching start
+                        //
+                        if (lines[i][j] == '\\') {
+                            if (j + 1 < lines[i].size()) {
+                                switch (lines[i][j + 1]) {
+                                    case 'n': value += '\n'; break;
+                                    case 't': value += '\t'; break;
+                                    case 'r': value += '\r'; break;
+                                    case 'v': value += '\v'; break;
+                                    case '0': value += '\0'; break;
+                                    case '\'': value += '\''; break;
+                                    case '"': value += '"'; break;
+                                    case '\\': value += '\\'; break;
+                                    case '?': value += '\?'; break;
+                                    case 'a': value += '\a'; break;
+                                    case 'b': value += '\b'; break;
+                                    case 'f': value += '\f'; break;
+                                    default:
+                                        std::cout << "\nERROR:\nmessage: you have to using just valid escape chars (documentation: https://github.com/HasanEfeAksoy/hasanbly/blob/main/README.md) when using DEF command. line:" << std::to_string(i + 1) << "\n";
+                                        return;
+                                }
+                                j++;
+                            } else {
+                                std::cout << "\nERROR:\nmessage: you have to using just valid escape chars (documentation: https://github.com/HasanEfeAksoy/hasanbly/blob/main/README.md) when using DEF command. line:" << std::to_string(i + 1) << "\n";
+                                return;
+                            }
+                        } else {
+                            value += lines[i][j];
+                        }
+                        //
+                        // escape catching end
+                        //
+
+
+                        // wihout escape catching
+                        //value += lines[i][j];
                     }
                     else {
                         if (lines[i][j] != '=') {
@@ -2440,38 +2481,308 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
 
 
-        else if (lines[i][0] == 'A' && lines[i][1] == 'D' && lines[i][2] == 'D' && lines[i][3] == '\\' && lines[i][4] != ' ' && lines[i][5] == ' ') {
-            if (lines[i][6] != '$' || lines[i][7] != ':' || lines[i][line_i_size - 1] != '_') {
-                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using ADD command. line:" << std::to_string(i + 1) << "\n";
+        else if (lines[i][0] == 'A' && lines[i][1] == 'D' && lines[i][2] == 'D' && lines[i][3] == 'E' && lines[i][4] == 'S' && lines[i][5] == 'C' && lines[i][6] == 'A' && lines[i][7] == 'P' && lines[i][8] == 'E' && lines[i][9] == '\\' && lines[i][10] != ' ' && lines[i][11] == ' ') {
+            if (lines[i][12] != '$' || lines[i][13] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using ADDESCAPE command. line:" << std::to_string(i + 1) << "\n";
                 return;
             }
             
             std::string varName = "";
-            for (int j = 12; j < line_i_size - 1; j++) {
+            for (int j = 18; j < line_i_size - 1; j++) {
                 varName += lines[i][j];
             }
 
-            if (lines[i][8] == 's' && lines[i][9] == 't' && lines[i][10] == 'r' && lines[i][11] == ':') {
+            if (lines[i][14] == 's' && lines[i][15] == 't' && lines[i][16] == 'r' && lines[i][17] == ':') {
                 
-                if (lines[i][4] == 'n') {
+                if (lines[i][10] == 'n') {
                     stringVariables.at(varName) += '\n';                    
                 }
-                else if (lines[i][4] == 't') {
+                else if (lines[i][10] == 't') {
                     stringVariables.at(varName) += '\t';
                 }
-                else if (lines[i][4] == 'r') {
+                else if (lines[i][10] == 'r') {
                     stringVariables.at(varName) += '\r';
                 }
+                else if (lines[i][10] == 'v') {
+                    stringVariables.at(varName) += '\v';
+                }
+                else if (lines[i][10] == '0') {
+                    stringVariables.at(varName) += '\0';
+                }
+                else if (lines[i][10] == '\'') {
+                    stringVariables.at(varName) += '\'';
+                }
+                else if (lines[i][10] == '"') {
+                    stringVariables.at(varName) += '"';
+                }
+                else if (lines[i][10] == '\\') {
+                    stringVariables.at(varName) += '\\';
+                }
+                else if (lines[i][10] == '\?') {
+                    stringVariables.at(varName) += '\?';
+                }
+                else if (lines[i][10] == '\a') {
+                    stringVariables.at(varName) += '\a';
+                }
+                else if (lines[i][10] == '\b') {
+                    stringVariables.at(varName) += '\b';
+                }
+                else if (lines[i][10] == '\f') {
+                    stringVariables.at(varName) += '\f';
+                }
                 else {
-                    std::cout << "\nERROR:\nmessage: you have to using just \\n \\t \\r parameters when using ADD command. line:" << std::to_string(i + 1) << "\n";
+                    std::cout << "\nERROR:\nmessage: you have to using just valid escape chars (\\n \\t \\r \\v \\0 \\\' \\\" \\\\ \\? \\a \\b \\f) parameters when using ADDESCAPE command. line:" << std::to_string(i + 1) << "\n";
                     return;
                 }
             }
             else {
-                std::cout << "\nERROR:\nmessage: you have to using :string: variable when using ADD command for call variables. line:" << std::to_string(i + 1) << "\n";
+                std::cout << "\nERROR:\nmessage: you have to using :string: variable when using ADDESCAPE command for call variables. line:" << std::to_string(i + 1) << "\n";
                 return;
             }
         }
+
+
+
+
+        else if (lines[i][0] == 'O' && lines[i][1] == 'P' && lines[i][2] == 'E' && lines[i][3] == 'N' && lines[i][4] == 'F' && lines[i][5] == 'I' && lines[i][6] == 'L' && lines[i][7] == 'E' && lines[i][8] == ' ') {
+            if (lines[i][9] != '$' || lines[i][10] != ':'  || lines[i][11] != 's' || lines[i][12] != 't' || lines[i][13] != 'r' || lines[i][14] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using OPENFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string varName = "";
+
+            for (int j = 15; lines[i][j] != '_'; j++)   {
+                varName += lines[i][j];
+            }
+
+            try {
+                stringVariables.at(varName);
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: undefined variable at OPENFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            try {
+                std::ofstream OPENFILEfile(stringVariables.at(varName).c_str());
+
+                if (!OPENFILEfile) {
+                    std::cout << "\nERROR:\nmessage: file can not be open. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                OPENFILEfile.close();
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: file can not be open. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'L' && lines[i][3] == 'E' && lines[i][4] == 'T' && lines[i][5] == 'E' && lines[i][6] == 'F' && lines[i][7] == 'I' && lines[i][8] == 'L' && lines[i][9] == 'E' && lines[i][10] == ' ') {
+            if (lines[i][11] != '$' || lines[i][12] != ':'  || lines[i][13] != 's' || lines[i][14] != 't' || lines[i][15] != 'r' || lines[i][16] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using DELETEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string varName = "";
+
+            for (int j = 17; lines[i][j] != '_'; j++)   {
+                varName += lines[i][j];
+            }
+
+            try {
+                stringVariables.at(varName);
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: undefined variable at DELETEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            try {
+                if (std::remove(stringVariables.at(varName).c_str()) != 0) {
+                    std::cout << "\nERROR:\nmessage: file can not be delete. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: file can not be delete. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+        else if (lines[i][0] == 'R' && lines[i][1] == 'E' && lines[i][2] == 'A' && lines[i][3] == 'D' && lines[i][4] == 'F' && lines[i][5] == 'I' && lines[i][6] == 'L' && lines[i][7] == 'E' && lines[i][8] == ' ') {
+            if (lines[i][9] != '$' || lines[i][10] != ':'  || lines[i][11] != 's' || lines[i][12] != 't' || lines[i][13] != 'r' || lines[i][14] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using READFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string firstVar = "";
+            std::string secondVar = "";
+
+            for (int j = 15; lines[i][j] != '_'; j++)   {
+                firstVar += lines[i][j];
+            }
+
+            int secondVarStart = 15 + firstVar.size() + 1;
+            
+            if (lines[i][secondVarStart] != ' ' || lines[i][secondVarStart + 1] != '$' || lines[i][secondVarStart + 2] != ':' || lines[i][secondVarStart + 3] != 's' || lines[i][secondVarStart + 4] != 't' || lines[i][secondVarStart + 5] != 'r' || lines[i][secondVarStart + 6] != ':') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using READFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            secondVarStart += 7;
+
+            for (int j = secondVarStart; lines[i][j] != '_'; j++)   {
+                secondVar += lines[i][j];
+            }
+
+            try {
+                stringVariables.at(firstVar);
+                stringVariables.at(secondVar);
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: undefined variable at READFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            try {
+                std::string READFILEcommandtext = "";
+                std::string READFILEcommandNewText = "";
+                std::ifstream READFILEcommandfile(stringVariables.at(firstVar).c_str());
+                if (!READFILEcommandfile) {
+                    std::cout << "\nERROR:\nmessage: file does not exist. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                while (std::getline(READFILEcommandfile, READFILEcommandNewText)) {
+                    READFILEcommandtext += READFILEcommandNewText + "\n";
+                }                
+                READFILEcommandfile.close();
+
+                if (!READFILEcommandtext.empty() && READFILEcommandtext.back() == '\n') {
+                    READFILEcommandtext.pop_back();
+                }
+                
+                stringVariables.at(secondVar) = READFILEcommandtext;
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: file can not be read. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+
+        else if (lines[i][0] == 'O' && lines[i][1] == 'V' && lines[i][2] == 'E' && lines[i][3] == 'R' && lines[i][4] == 'W' && lines[i][5] == 'R' && lines[i][6] == 'I' && lines[i][7] == 'T' && lines[i][8] == 'E' && lines[i][9] == 'F' && lines[i][10] == 'I' && lines[i][11] == 'L' && lines[i][12] == 'E' && lines[i][13] == ' ') {
+            if (lines[i][14] != '$' || lines[i][15] != ':'  || lines[i][16] != 's' || lines[i][17] != 't' || lines[i][18] != 'r' || lines[i][19] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using OVERWRITE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string firstVar = "";
+            std::string secondVar = "";
+
+            for (int j = 20; lines[i][j] != '_'; j++)   {
+                firstVar += lines[i][j];
+            }
+
+            int secondVarStart = 20 + firstVar.size() + 1;
+            
+            if (lines[i][secondVarStart] != ' ' || lines[i][secondVarStart + 1] != '$' || lines[i][secondVarStart + 2] != ':' || lines[i][secondVarStart + 3] != 's' || lines[i][secondVarStart + 4] != 't' || lines[i][secondVarStart + 5] != 'r' || lines[i][secondVarStart + 6] != ':') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using OVERWRITEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            secondVarStart += 7;
+
+            for (int j = secondVarStart; lines[i][j] != '_'; j++)   {
+                secondVar += lines[i][j];
+            }
+
+            try {
+                stringVariables.at(firstVar);
+                stringVariables.at(secondVar);
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: undefined variable at OVERWRITEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            try {
+                std::ofstream OVERWRITEFILEcommandfile(stringVariables.at(firstVar).c_str(), std::ios::trunc);
+
+                if (!OVERWRITEFILEcommandfile.is_open()) {
+                    std::cout << "\nERROR:\nmessage: file can not be create/open. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                OVERWRITEFILEcommandfile << stringVariables.at(secondVar);
+                OVERWRITEFILEcommandfile.close();
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: file can not be create/open. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+        else if (lines[i][0] == 'A' && lines[i][1] == 'P' && lines[i][2] == 'P' && lines[i][3] == 'E' && lines[i][4] == 'N' && lines[i][5] == 'D' && lines[i][6] == 'W' && lines[i][7] == 'R' && lines[i][8] == 'I' && lines[i][9] == 'T' && lines[i][10] == 'E' && lines[i][11] == 'F' && lines[i][12] == 'I' && lines[i][13] == 'L' && lines[i][14] == 'E' && lines[i][15] == ' ') {
+            if (lines[i][16] != '$' || lines[i][17] != ':'  || lines[i][18] != 's' || lines[i][19] != 't' || lines[i][20] != 'r' || lines[i][21] != ':' || lines[i][line_i_size - 1] != '_') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using APPENDWRITEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string firstVar = "";
+            std::string secondVar = "";
+
+            for (int j = 22; lines[i][j] != '_'; j++)   {
+                firstVar += lines[i][j];
+            }
+
+            int secondVarStart = 22 + firstVar.size() + 1;
+            
+            if (lines[i][secondVarStart] != ' ' || lines[i][secondVarStart + 1] != '$' || lines[i][secondVarStart + 2] != ':' || lines[i][secondVarStart + 3] != 's' || lines[i][secondVarStart + 4] != 't' || lines[i][secondVarStart + 5] != 'r' || lines[i][secondVarStart + 6] != ':') {
+                std::cout << "\nERROR:\nmessage: you have to using a :string: variable when using APPENDWRITEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            secondVarStart += 7;
+
+            for (int j = secondVarStart; lines[i][j] != '_'; j++)   {
+                secondVar += lines[i][j];
+            }
+
+            try {
+                stringVariables.at(firstVar);
+                stringVariables.at(secondVar);
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: undefined variable at APPENDWRITEFILE command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            try {
+                std::ofstream APPENDWRITEFILEcommandfile(stringVariables.at(firstVar).c_str(), std::ios::app);
+
+                if (!APPENDWRITEFILEcommandfile.is_open()) {
+                    std::cout << "\nERROR:\nmessage: file can not be create/open. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                APPENDWRITEFILEcommandfile << stringVariables.at(secondVar);
+                APPENDWRITEFILEcommandfile.close();
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: file can not be create/open. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+
 
 
 

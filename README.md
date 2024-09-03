@@ -110,17 +110,22 @@ EXIT;
   <br>
   <p>Create a new variable and assign the entered value to the value of the variable. You have to define int or string or double (int-str-dbl).
   <br>
+  <br>
   Valid escape chars (\n \t \r \v \0 \' \" \\ \? \a \b \f) are usable in strings.
+  <br>
   <br>
   [Camel case variables are preferred]
   <br>
   <br>
   For call a variable use $:&lttype&gt:&ltvariableName&gt_
   <br>
+  <br>
   If you call undefined variable, its a possible that you will get an error like "undefined variable" or like ->
+  <br>
   <br>
   terminate called after throwing an instance of 'std::out_of_range'
   what():  _Map_base::at
+  <br>
   <br>
   <br>
   <pre>
@@ -292,6 +297,7 @@ EXIT;
   <p>Like box office checkpoint. If true: can pass, else: go to a line.
   <br>
   You have to use == != &lt&lt &gt&gt &lt= &gt= and must use variable (not pure values) and use ELSE:&ltpure number&gt
+  <br>
   <br>
   IMPORTANT: you have to string-string or int-int or double-double when using == or !=. but if using &lt&lt &gt&gt &lt= &gt= you have to input parameters just int-int/double or double-double/int.
   <br>

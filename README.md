@@ -743,7 +743,7 @@ EXIT;
   </pre>
   <br>
   <br>
-  <pre>output: <i>hello<br></i></pre>
+  <pre>output: <i>hello<br><br><br></i></pre>
   </p>
 </li>
 

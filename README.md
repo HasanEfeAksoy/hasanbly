@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br> 
 <br>
-<b>current version 1.5</b>
+<b>current version 1.6</b>
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
@@ -259,7 +259,7 @@ EXIT;
 <li>
   <h4>GOTO</h4>
   <br>
-  <p>Going to line. You can using with line number or line number variable value.
+  <p>Going to line. You have to using pure integer value.
   <br>
   <br>
   <pre>
@@ -267,16 +267,6 @@ EXIT;
   &ltHi; 
   <br>
   GOTO 1;
-  <br>
-  <br>
-  // or
-  <br>
-  <br>
-  //DEF:int:line:2;
-  <br>
-  //&ltHi;
-  <br>
-  //GOTO $:int:line_;
   <br>
   EXIT;
   </i>

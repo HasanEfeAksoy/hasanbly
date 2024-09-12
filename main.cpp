@@ -2871,17 +2871,41 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
 
                 if (varType == 0) {
                     for (int j = 0; j < count; j++) {
-                        stringVariables.insert(std::pair<std::string, std::string>(secondParameter + std::to_string(j), ""));
+                        try {
+                            stringVariables.at(secondParameter + std::to_string(j));
+
+                            std::cout << "\nERROR:\nmessage: variable name is already exist -> " + secondParameter + std::to_string(j) + " <- . line:" << std::to_string(i + 1) << "\n";
+                            return;
+                        }
+                        catch(const std::exception& e) {
+                            stringVariables.insert(std::pair<std::string, std::string>(secondParameter + std::to_string(j), ""));
+                        }
                     }
                 }
                 else if (varType == 1) {
                     for (int j = 0; j < count; j++) {
-                        intVariables.insert(std::pair<std::string, int>(secondParameter + std::to_string(j), 0));
+                        try {
+                            intVariables.at(secondParameter + std::to_string(j));
+
+                            std::cout << "\nERROR:\nmessage: variable name is already exist -> " + secondParameter + std::to_string(j) + " <- . line:" << std::to_string(i + 1) << "\n";
+                            return;
+                        }
+                        catch(const std::exception& e) {
+                            intVariables.insert(std::pair<std::string, int>(secondParameter + std::to_string(j), 0));
+                        }
                     }
                 }
                 else if (varType == 2) {
                     for (int j = 0; j < count; j++) {
-                        doubleVariables.insert(std::pair<std::string, double>(secondParameter + std::to_string(j), 0.0));
+                        try {
+                            doubleVariables.at(secondParameter + std::to_string(j));
+
+                            std::cout << "\nERROR:\nmessage: variable name is already exist -> " + secondParameter + std::to_string(j) + " <- . line:" << std::to_string(i + 1) << "\n";
+                            return;
+                        }
+                        catch(const std::exception& e) {
+                            doubleVariables.insert(std::pair<std::string, double>(secondParameter + std::to_string(j), 0.0));
+                        }
                     }
                 }
             }

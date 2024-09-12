@@ -983,7 +983,7 @@ EXIT;
   <br>
   DEFEL[2] $:int:var_;
   <br>
-  GETEL[0] $:int:var_ $:int:new_;
+  GETEL[0] $:int:var_ $:int:other;
   <br>
   &lt&lt$:int:other_;
   <br>

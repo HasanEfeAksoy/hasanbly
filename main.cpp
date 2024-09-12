@@ -11,7 +11,7 @@
 
         VERSION:
 
-          1.6
+          1.7
 
 
 
@@ -46,6 +46,10 @@
         READFILE
         OVERWRITEFILE
         APPENDWRITEFILE
+        DEFEL
+        FREEEL
+        SETEL
+        GETEL
 */
 
 
@@ -2042,7 +2046,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     }
                 }
 
-                // ilk parametrenin index'inci indexini ikinci parametreye eşitliyoruz.
+                // ikinci parametrenin değerini ilk parametrenin index'ince indexine eşitliyoruz.
                 stringVariables.at(secondVarName) = stringVariables.at(firstVarName).at(index);
             }
             else {
@@ -2241,7 +2245,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                         else {
                             if (lines[i][j + 1] != ']') {
-                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'REPLACE[<int>]' when using REPLACE command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
                                 return;
                             }
                             afterIndexSpace = j + 2;
@@ -2264,7 +2268,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                     }
                     if (!isEnded) {
-                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'INDEX[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
+                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'REPLACE[<int>]' when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
                         return;
                     }
                     index = std::stoi(indexIntValue);
@@ -2300,7 +2304,7 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                         }
                         else {
                             if (lines[i][j + 1] != ' ' || lines[i][j + 2] != '$' || lines[i][j + 3] != ':' || lines[i][j + 4] != 's' || lines[i][j + 5] != 't' || lines[i][j + 6] != 'r' || lines[i][j + 7] != ':') {
-                                std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using INDEX command. line:" << std::to_string(i + 1) << "\n";
+                                std::cout << "\nERROR:\nmessage: you have to using :str: and :str: variable types when using REPLACE command. line:" << std::to_string(i + 1) << "\n";
                                 return;
                             }
                             j += 7; // 8 yapmamız gerekirdi ancak for döngüsü tamamlanınca zaten +1 yapacak o yüzden 7
@@ -2777,6 +2781,464 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             }
             catch(const std::exception& e) {
                 std::cout << "\nERROR:\nmessage: file can not be create/open. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+
+
+        else if (lines[i][0] == 'D' && lines[i][1] == 'E' && lines[i][2] == 'F' && lines[i][3] == 'E' && lines[i][4] == 'L') {
+            if (lines[i][5] == '[' && lines[i][line_i_size - 1] == '_') {
+                int count = 0;
+                std::string countText = "";
+                int controlIndex = 6;
+                
+                // 0: num | 1: variable
+                int varOrNum = 0;
+
+                if (lines[i][controlIndex] == '$' && lines[i][controlIndex + 1] == ':' && lines[i][controlIndex + 2] == 'i' && lines[i][controlIndex + 3] == 'n' && lines[i][controlIndex + 4] == 't' && lines[i][controlIndex + 5] == ':') {
+                    varOrNum = 1;
+                    controlIndex += 6;
+                }
+                else if (std::stoi(std::to_string(lines[i][controlIndex])) % 1 == 0) {
+                    varOrNum = 0;
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use integer number or integer variable at first parameter when using DEFEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+                
+                for (int j = controlIndex; j < line_i_size; j++) {
+                    if (lines[i][j] == ']') {
+                        break;
+                    }
+                    else {
+                        countText += lines[i][j];
+                    }
+                    controlIndex++;
+                }
+
+                if (varOrNum == 1) {
+                    if (lines[i][controlIndex - 1] != '_' || countText.empty()) {
+                        std::cout << "\nERROR:\nmessage: you have to use integer number or integer variable at first parameter when using DEFEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                    else {
+                        countText.pop_back();
+                    }
+                }
+
+                if (varOrNum == 0) {
+                    count = std::stoi(countText);
+                }
+                else if (varOrNum == 1) {
+                    count = intVariables.at(countText);
+                }
+
+                // 0: str | 1: int | 2: dbl
+                int varType = -1;
+
+                if (lines[i][controlIndex + 1] == ' ' && lines[i][controlIndex + 2] == '$' && lines[i][controlIndex + 3] == ':' && lines[i][controlIndex + 7] == ':') {
+                    if (lines[i][controlIndex + 4] == 's' && lines[i][controlIndex + 5] == 't' && lines[i][controlIndex + 6] == 'r') {
+                        varType = 0;
+                    }
+                    else if (lines[i][controlIndex + 4] == 'i' && lines[i][controlIndex + 5] == 'n' && lines[i][controlIndex + 6] == 't') {
+                        varType = 1;
+                    }
+                    else if (lines[i][controlIndex + 4] == 'd' && lines[i][controlIndex + 5] == 'b' && lines[i][controlIndex + 6] == 'l') {
+                        varType = 2;
+                    }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to use variable when using DEFEL command's last parameter. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use variable when using DEFEL command's last parameter. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+
+                std::string secondParameter = "";
+                
+                controlIndex += 8;
+
+                for (int j = controlIndex; lines[i][j] != '_'; j++) {
+                    secondParameter += lines[i][j];
+                }
+
+
+                if (varType == 0) {
+                    for (int j = 0; j < count; j++) {
+                        stringVariables.insert(std::pair<std::string, std::string>(secondParameter + std::to_string(j), ""));
+                    }
+                }
+                else if (varType == 1) {
+                    for (int j = 0; j < count; j++) {
+                        intVariables.insert(std::pair<std::string, int>(secondParameter + std::to_string(j), 0));
+                    }
+                }
+                else if (varType == 2) {
+                    for (int j = 0; j < count; j++) {
+                        doubleVariables.insert(std::pair<std::string, double>(secondParameter + std::to_string(j), 0.0));
+                    }
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'DEFEL[<int>]' when using DEFEL command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+        else if (lines[i][0] == 'F' && lines[i][1] == 'R' && lines[i][2] == 'E' && lines[i][3] == 'E' && lines[i][4] == 'E' && lines[i][5] == 'L') {
+            if (lines[i][6] == '[' && lines[i][line_i_size - 1] == '_') {
+                int count = 0;
+                std::string countText = "";
+                int controlIndex = 7;
+                
+                // 0: num | 1: variable
+                int varOrNum = 0;
+
+                if (lines[i][controlIndex] == '$' && lines[i][controlIndex + 1] == ':' && lines[i][controlIndex + 2] == 'i' && lines[i][controlIndex + 3] == 'n' && lines[i][controlIndex + 4] == 't' && lines[i][controlIndex + 5] == ':') {
+                    varOrNum = 1;
+                    controlIndex += 6;
+                }
+                else if (std::stoi(std::to_string(lines[i][controlIndex])) % 1 == 0) {
+                    varOrNum = 0;
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use integer number or integer variable at first parameter when using FREEEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+                
+                for (int j = controlIndex; j < line_i_size; j++) {
+                    if (lines[i][j] == ']') {
+                        break;
+                    }
+                    else {
+                        countText += lines[i][j];
+                    }
+                    controlIndex++;
+                }
+
+                if (varOrNum == 1) {
+                    if (lines[i][controlIndex - 1] != '_' || countText.empty()) {
+                        std::cout << "\nERROR:\nmessage: you have to use integer number or integer variable at first parameter when using FREEEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                    else {
+                        countText.pop_back();
+                    }
+                }
+
+                if (varOrNum == 0) {
+                    count = std::stoi(countText);
+                }
+                else if (varOrNum == 1) {
+                    count = intVariables.at(countText);
+                }
+
+                // 0: str | 1: int | 2: dbl
+                int varType = -1;
+
+                if (lines[i][controlIndex + 1] == ' ' && lines[i][controlIndex + 2] == '$' && lines[i][controlIndex + 3] == ':' && lines[i][controlIndex + 7] == ':') {
+                    if (lines[i][controlIndex + 4] == 's' && lines[i][controlIndex + 5] == 't' && lines[i][controlIndex + 6] == 'r') {
+                        varType = 0;
+                    }
+                    else if (lines[i][controlIndex + 4] == 'i' && lines[i][controlIndex + 5] == 'n' && lines[i][controlIndex + 6] == 't') {
+                        varType = 1;
+                    }
+                    else if (lines[i][controlIndex + 4] == 'd' && lines[i][controlIndex + 5] == 'b' && lines[i][controlIndex + 6] == 'l') {
+                        varType = 2;
+                    }
+                    else {
+                        std::cout << "\nERROR:\nmessage: you have to use variable when using FREEEL command's last parameter. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use variable when using FREEEL command's last parameter. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+
+                std::string secondParameter = "";
+                
+                controlIndex += 8;
+
+                for (int j = controlIndex; lines[i][j] != '_'; j++) {
+                    secondParameter += lines[i][j];
+                }
+
+
+                if (varType == 0) {
+                    stringVariables.erase(secondParameter + std::to_string(count));
+                }
+                else if (varType == 1) {
+                    intVariables.erase(secondParameter + std::to_string(count));
+                }
+                else if (varType == 2) {
+                    doubleVariables.erase(secondParameter + std::to_string(count));
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'FREEEL[<int>]' when using FREEEL command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+        else if (lines[i][0] == 'S' && lines[i][1] == 'E' && lines[i][2] == 'T' && lines[i][3] == 'E' && lines[i][4] == 'L') {
+            if (lines[i][5] == '[' && lines[i][line_i_size - 1] == '_') { // ikinci koşul olmasının sebebi komutumuz _ ile bitmek zorunda ikinci parametre değişkendir ve _ ile biter.
+                int index = 0;
+                int afterIndexSpace = 0;
+                
+                if (lines[i][6] == '$' && lines[i][7] == ':' && lines[i][8] == 'i' && lines[i][9] == 'n' && lines[i][10] == 't' && lines[i][11] == ':') {
+                    std::string indexVarName = "";
+                    for (int j = 12; j < line_i_size; j++) {
+                        if (lines[i][j] != '_') {
+                            indexVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ']') {
+                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'SETEL[<int>]' when using SETEL command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                                return;
+                            }
+                            afterIndexSpace = j + 2;
+                            break;
+                        }
+                    }
+                    index = intVariables.at(indexVarName);
+                }
+                else if (std::stoi(std::to_string(lines[i][6])) % 1 == 0) {
+                    std::string indexIntValue = "";
+                    bool isEnded = false;
+                    for (int j = 6; j < line_i_size; j++) {
+                        if (lines[i][j] == ']') {
+                            isEnded = true;
+                            afterIndexSpace = j + 1;
+                            break;
+                        }
+                        else {
+                            indexIntValue += lines[i][j];
+                        }
+                    }
+                    if (!isEnded) {
+                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'SETEL[<int>]' when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                    index = std::stoi(indexIntValue);
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using SETEL command's index. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+
+        
+                if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using variables except index when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+                
+
+                // 0: str | 1: int | 2: dbl
+                int typeOfVars = -1;
+
+                if (lines[i][afterIndexSpace + 3] == 's' && lines[i][afterIndexSpace + 4] == 't' && lines[i][afterIndexSpace + 5] == 'r' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 0;
+                }
+                else if (lines[i][afterIndexSpace + 3] == 'i' && lines[i][afterIndexSpace + 4] == 'n' && lines[i][afterIndexSpace + 5] == 't' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 1;
+                }
+                else if (lines[i][afterIndexSpace + 3] == 'd' && lines[i][afterIndexSpace + 4] == 'b' && lines[i][afterIndexSpace + 5] == 'l' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 2;
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using variables except index when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                afterIndexSpace += 7;
+
+
+                std::string firstVarName = "";
+                std::string secondVarName = "";
+                
+                for (int j = afterIndexSpace; lines[i][j] != '_'; j++) {
+                    firstVarName += lines[i][j];
+                    afterIndexSpace++;
+                }
+
+
+                if (typeOfVars == 0) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 's' || lines[i][afterIndexSpace + 5] != 't' || lines[i][afterIndexSpace + 6] != 'r' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else if (typeOfVars == 1) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 'i' || lines[i][afterIndexSpace + 5] != 'n' || lines[i][afterIndexSpace + 6] != 't' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else if (typeOfVars == 2) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 'd' || lines[i][afterIndexSpace + 5] != 'b' || lines[i][afterIndexSpace + 6] != 'l' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+
+                afterIndexSpace += 8;
+
+                for (int j = afterIndexSpace; lines[i][j] != '_'; j++) {
+                    secondVarName += lines[i][j];
+                }
+
+
+                // ilk parametrenin indexinci değeri = ikinci parametre
+                if (typeOfVars == 0) {
+                    stringVariables.at(firstVarName + std::to_string(index)) = stringVariables.at(secondVarName);
+                }
+                else if (typeOfVars == 1) {
+                    intVariables.at(firstVarName + std::to_string(index)) = intVariables.at(secondVarName);
+                }
+                else if (typeOfVars == 2) {
+                    doubleVariables.at(firstVarName + std::to_string(index)) = doubleVariables.at(secondVarName);
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'SETEL[<int>]' when using SETEL command. line:" << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
+
+
+        else if (lines[i][0] == 'G' && lines[i][1] == 'E' && lines[i][2] == 'T' && lines[i][3] == 'E' && lines[i][4] == 'L') {
+            if (lines[i][5] == '[' && lines[i][line_i_size - 1] == '_') { // ikinci koşul olmasının sebebi komutumuz _ ile bitmek zorunda ikinci parametre değişkendir ve _ ile biter.
+                int index = 0;
+                int afterIndexSpace = 0;
+                
+                if (lines[i][6] == '$' && lines[i][7] == ':' && lines[i][8] == 'i' && lines[i][9] == 'n' && lines[i][10] == 't' && lines[i][11] == ':') {
+                    std::string indexVarName = "";
+                    for (int j = 12; j < line_i_size; j++) {
+                        if (lines[i][j] != '_') {
+                            indexVarName += lines[i][j];
+                        }
+                        else {
+                            if (lines[i][j + 1] != ']') {
+                                std::cout << "\nERROR:\nmessage: you have to put ']' in 'GETEL[<int>]' when using GETEL command. or you may forgot '_' at the end of call index variable. line:" << std::to_string(i + 1) << "\n";
+                                return;
+                            }
+                            afterIndexSpace = j + 2;
+                            break;
+                        }
+                    }
+                    index = intVariables.at(indexVarName);
+                }
+                else if (std::stoi(std::to_string(lines[i][6])) % 1 == 0) {
+                    std::string indexIntValue = "";
+                    bool isEnded = false;
+                    for (int j = 6; j < line_i_size; j++) {
+                        if (lines[i][j] == ']') {
+                            isEnded = true;
+                            afterIndexSpace = j + 1;
+                            break;
+                        }
+                        else {
+                            indexIntValue += lines[i][j];
+                        }
+                    }
+                    if (!isEnded) {
+                        std::cout << "\nERROR:\nmessage: you have to put ']' in 'GETEL[<int>]' when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                    index = std::stoi(indexIntValue);
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to use pure integer number or int variable when using GETEL command's index. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+
+        
+                if (lines[i][afterIndexSpace] != ' ' || lines[i][afterIndexSpace + 1] != '$' || lines[i][afterIndexSpace + 2] != ':') {
+                    std::cout << "\nERROR:\nmessage: you have to using variables except index when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+                
+
+                // 0: str | 1: int | 2: dbl
+                int typeOfVars = -1;
+
+                if (lines[i][afterIndexSpace + 3] == 's' && lines[i][afterIndexSpace + 4] == 't' && lines[i][afterIndexSpace + 5] == 'r' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 0;
+                }
+                else if (lines[i][afterIndexSpace + 3] == 'i' && lines[i][afterIndexSpace + 4] == 'n' && lines[i][afterIndexSpace + 5] == 't' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 1;
+                }
+                else if (lines[i][afterIndexSpace + 3] == 'd' && lines[i][afterIndexSpace + 4] == 'b' && lines[i][afterIndexSpace + 5] == 'l' && lines[i][afterIndexSpace + 6] == ':') {
+                    typeOfVars = 2;
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: you have to using variables except index when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                    return;
+                }
+
+                afterIndexSpace += 7;
+
+
+                std::string firstVarName = "";
+                std::string secondVarName = "";
+                
+                for (int j = afterIndexSpace; lines[i][j] != '_'; j++) {
+                    firstVarName += lines[i][j];
+                    afterIndexSpace++;
+                }
+                
+
+                if (typeOfVars == 0) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 's' || lines[i][afterIndexSpace + 5] != 't' || lines[i][afterIndexSpace + 6] != 'r' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else if (typeOfVars == 1) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 'i' || lines[i][afterIndexSpace + 5] != 'n' || lines[i][afterIndexSpace + 6] != 't' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+                else if (typeOfVars == 2) {
+                    if (lines[i][afterIndexSpace] != '_' || lines[i][afterIndexSpace + 1] != ' ' || lines[i][afterIndexSpace + 2] != '$' || lines[i][afterIndexSpace + 3] != ':' || lines[i][afterIndexSpace + 4] != 'd' || lines[i][afterIndexSpace + 5] != 'b' || lines[i][afterIndexSpace + 6] != 'l' || lines[i][afterIndexSpace + 7] != ':') {
+                        std::cout << "\nERROR:\nmessage: you have to using same variables types when using GETEL command. line:" << std::to_string(i + 1) << "\n";
+                        return;
+                    }
+                }
+
+                afterIndexSpace += 8;
+
+                for (int j = afterIndexSpace; lines[i][j] != '_'; j++) {
+                    secondVarName += lines[i][j];
+                }
+
+
+                // ikinci parametre = ilk parametrenin indexinci değeri
+                if (typeOfVars == 0) {
+                    stringVariables.at(secondVarName) = stringVariables.at(firstVarName + std::to_string(index));
+                }
+                else if (typeOfVars == 1) {
+                    intVariables.at(secondVarName) = intVariables.at(firstVarName + std::to_string(index));
+                }
+                else if (typeOfVars == 2) {
+                    doubleVariables.at(secondVarName) = doubleVariables.at(firstVarName + std::to_string(index));
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: you have to put '[' in 'GETEL[<int>]' when using GETEL command. line:" << std::to_string(i + 1) << "\n";
                 return;
             }
         }

@@ -2,7 +2,7 @@
 hasanbly basic scripting language
 <br> 
 <br>
-<b>current version 1.6</b>
+<b>current version 1.7</b>
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
@@ -867,6 +867,132 @@ EXIT;
   <br>
   <br>
   <pre>output: <i></i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>DEFEL</h4>
+  <br>
+  <p>Multiple defining. Add index to variable name.
+  <br>
+  [&ltElements count&gt]
+  <br>
+  (first parameter is in bracket for element count and it can be integer variable. second one is base name of variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEFEL[4] $:int:var_;
+  <br>
+  &lt&lt$:int:var0_;
+  <br>
+  &lt&lt$:int:var1_;
+  <br>
+  &lt&lt$:int:var2_;
+  <br>
+  &lt&lt$:int:var3_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>0<br>0<br>0<br>0</i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>FREEEL</h4>
+  <br>
+  <p>FREE command for list elements.
+  <br>
+  (first parameter is in bracket for element index and it can be integer variable. second one is base name of variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEFEL[2] $:int:var_;
+  <br>
+  &lt&lt$:int:var0_;
+  <br>
+  &lt&lt$:int:var1_;
+  <br>
+  FREEEL[1] $:int:var_;
+  <br>
+  &lt&lt$:int:var1_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>0<br>0<br>ERROR</i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>SETEL</h4>
+  <br>
+  <p>second parameter + n'th index = third parameter
+  <br>
+  [&ltElement index&gt]
+  <br>
+  (first parameter is in bracket for element index and it can be integer variable. second one is base name of variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:int:new=10;
+  <br>
+  DEFEL[4] $:int:var_;
+  <br>
+  SETEL[0] $:int:var_ $:int:new_;
+  <br>
+  &lt&lt$:int:var0_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>10</i></pre>
+  </p>
+</li>
+
+<br>
+
+<li>
+  <h4>GETEL</h4>
+  <br>
+  <p>third parameter = second parameter + n'th index
+  <br>
+  [&ltElement index&gt]
+  <br>
+  (first parameter is in bracket for element index and it can be integer variable. second one is base name of variable)
+  <br>
+  <br>
+  <pre>
+  <i>
+  DEF:int:other=50;
+  <br>
+  DEFEL[2] $:int:var_;
+  <br>
+  GETEL[0] $:int:var_ $:int:new_;
+  <br>
+  &lt&lt$:int:other_;
+  <br>
+  EXIT;
+  </i>
+  </pre>
+  <br>
+  <br>
+  <pre>output: <i>0</i></pre>
   </p>
 </li>
 

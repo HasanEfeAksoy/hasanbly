@@ -12,14 +12,17 @@ if you want developing this project you can compile like this:
 <b><i><pre>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</pre></i></b>
 
 <br>
+<br>
+<b><a href="https://www.hasanefeaksoy.com/hasanbly-scripting-language-documentation">Documentation</a></b>
+<br>
+<br>
+
+<br>
 <h1>Get Started</h1>
 <br>
 <b>You can get it with the command <pre>git clone https://github.com/HasanEfeAksoy/hasanbly.git</pre></b>
 <br>
 Or get it as zip. Download hsnc.exe and create your .hsn file. (main.hsn)
-<br>
-<br>
-<b>Documentation: <a>hasanefeaksoy.com/hasanbly-scripting-language-documentation</a></b>
 <br>
 <br>
 Run with <b><i><pre>hsnc main.hsn</pre></i></b> command.

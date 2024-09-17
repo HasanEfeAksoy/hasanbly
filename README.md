@@ -14,7 +14,9 @@ if you want developing this project you can compile like this:
 
 <br>
 <br>
-<b><a href="https://www.hasanefeaksoy.com/hasanbly-scripting-language-documentation">Documentation</a></b>
+<h1>Documentation</h1>
+<br>
+<b>You can review the <a href="https://www.hasanefeaksoy.com/hasanbly-scripting-language-documentation">documentation</a>.</b>
 <br>
 <br>
 
@@ -37,7 +39,7 @@ Run with <b><i><pre>hsnc main.hsn</pre></i></b> command.
 <br>
 Created with C++.
 <br>
-<h4>It is just <i>interprete</i> and run your codes easily.</h4></p>
+<h4>It <i>interprets</i> and runs your codes easily.</h4></p>
 </b>
 
 <br>

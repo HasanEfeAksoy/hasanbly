@@ -3,12 +3,12 @@
 hasanbly scripting language
 <br> 
 <br>
-<b>current version 1.7</b>
+<b>current version 1.9</b>
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
 <br>
-if you want developing this project you can compile like this:
+If you would like to contribute to the development of this project, you can compile it as follows:
 <br>
 <b><i><pre>g++ main.cpp -o hsnc -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread</pre></i></b>
 
@@ -23,27 +23,27 @@ if you want developing this project you can compile like this:
 <br>
 <h1>Get Started</h1>
 <br>
-<b>You can get it with the command <pre>git clone https://github.com/HasanEfeAksoy/hasanbly.git</pre></b>
+<b>You can acquire the project using the command: <pre>git clone https://github.com/HasanEfeAksoy/hasanbly.git</pre></b>
 <br>
-Or get it as zip. Download hsnc.exe and create your .hsn file. (main.hsn)
+Alternatively, you can download it as a ZIP file. Download hsnc.exe and create your .hsn file (e.g., main.hsn).
 <br>
 <br>
-Run with <b><i><pre>hsnc main.hsn</pre></i></b> command.
+Run it using the <b><i><pre>hsnc main.hsn</pre></i></b> command.
 <br>
-(note: Example main.hsn file may be do not run on MacOS and Linux. Please delete file and create again.)
+(Note: The example main.hsn file may not run correctly on MacOS or Linux due to line endings. Please delete the file and create it again on your local system.)
 <br>
 <br>
 
 <b>
-<p>Hasanbly is open source, not used parser basic scripting language.
+<p>Hasanbly is an open-source, basic scripting language that does not use an external parser.
 <br>
 Created with C++.
 <br>
-<h4>It <i>interprets</i> and runs your codes easily.</h4></p>
+<h4>It <i>interprets</i> and runs your code with ease.</h4></p>
 </b>
 
 <br>
 <br>
 <br>
 
-<h2>UNDER DEVOLOPMENT</h2>
+<h2>UNDER DEVELOPMENT</h2>

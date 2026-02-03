@@ -1,3 +1,10 @@
-<<^$^$Hello World!^$^$;
+DEF:int:x=1;
+DEF:int:y=10;
 
+<<The number is $:int:x_;
+JUST 9;
+IF>> $:int:x_ $:int:y_ ELSE=4;
+GOTO 10;
+
+INC $:int:x_;
 EXIT;

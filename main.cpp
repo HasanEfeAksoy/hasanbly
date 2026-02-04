@@ -11,7 +11,7 @@
 
         VERSION:
 
-          1.9
+          2.0
 
 
 
@@ -51,6 +51,7 @@
         SETEL
         GETEL
         JUST
+        SWAP
 */
 
 
@@ -1111,7 +1112,123 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
                     return;
                 }
             }
+
+
+            // begin v2.0
             
+            else if (process == ".&" || process == ".AND") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = (*int1) & (*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.& and M.AND at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".|" || process == ".OR") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = (*int1) | (*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.| and M.OR at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".^" || process == ".XOR") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = (*int1) ^ (*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.^ and M.XOR at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".~" || process == ".NOT") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = ~(*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.~ and M.NOT at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".!" || process == ".LOGNOT") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = !(*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.! and M.LOGNOT at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".<<" || process == ".SHL") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = (*int1) << (*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.<< and M.SHL at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".>>" || process == ".SHR") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = (*int1) >> (*int2);
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.>> and M.SHR at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".NAND") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = ~((*int1) & (*int2));
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.NAND at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".NOR") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1) *int1 = ~((*int1) | (*int2));
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.NOR at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".ROL") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1){
+                    // Sayıyı işaretsiz (unsigned) olarak ele almalıyız ki bit kaydırma düzgün çalışsın
+                    unsigned long long n = static_cast<unsigned long long>(*int1);
+                    int shift = *int2;
+                    
+                    // Sistemin int büyüklüğüne göre bit sayısını belirle (genelde 32 veya 64)
+                    int bitCount = sizeof(int) * 8; 
+                    
+                    // Mod alarak gereksiz tam turları engelle (örn: 32 bitlik sayıyı 33 kere döndürmek 1 kere döndürmektir)
+                    shift %= bitCount;
+
+                    // ROL Mantığı: Sola kaydır | Boşa çıkan bitleri sağdan içeri sok
+                    *int1 = (n << shift) | (n >> (bitCount - shift));
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.ROL at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (process == ".ROR") {
+                // 1. int int
+                if (typeFirst == 1 && typeSecond == 1){
+                    unsigned long long n = static_cast<unsigned long long>(*int1);
+                    int shift = *int2;
+                    int bitCount = sizeof(int) * 8;
+                    
+                    shift %= bitCount;
+
+                    // ROR Mantığı: Sağa kaydır | Boşa çıkan bitleri soldan içeri sok
+                    *int1 = (n >> shift) | (n << (bitCount - shift));
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: Incompatible variable types found when using M.ROR at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+
+
+            // under development
             
 
             else {
@@ -3304,6 +3421,85 @@ void interprete(std::string& text, std::vector<std::string>& lines, bool* unInte
             continue;
         }
 
+
+
+        // begin v2.0
+
+
+        else if (lines[i][0] == 'S' && lines[i][1] == 'W' && lines[i][2] == 'A' && lines[i][3] == 'P' && lines[i][4] == ' ') {
+            int typet;
+            if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 's' && lines[i][8] == 't' && lines[i][9] == 'r' && lines[i][10] == ':' && lines[i][line_i_size - 1] == '_') {
+                typet = 0;
+            }
+            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'i' && lines[i][8] == 'n' && lines[i][9] == 't' && lines[i][10] == ':' && lines[i][line_i_size - 1] == '_') {
+                typet = 1;
+            }
+            else if (lines[i][5] == '$' && lines[i][6] == ':' && lines[i][7] == 'd' && lines[i][8] == 'b' && lines[i][9] == 'l' && lines[i][10] == ':' && lines[i][line_i_size - 1] == '_') {
+                typet = 2;
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: You must use variables with the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            std::string firstVar = "";
+            std::string secondVar = "";
+
+            for (int j = 11; lines[i][j] != '_'; j++)   {
+                firstVar += lines[i][j];
+            }
+
+            int secondVarStart = 11 + firstVar.size() + 1;
+            
+            if (lines[i][secondVarStart] == ' ' && lines[i][secondVarStart + 1] == '$' && lines[i][secondVarStart + 2] == ':' && lines[i][secondVarStart + 3] == 's' && lines[i][secondVarStart + 4] == 't' && lines[i][secondVarStart + 5] == 'r' && lines[i][secondVarStart + 6] == ':') {
+                if (typet != 0) {
+                    std::cout << "\nERROR:\nmessage: You must use same type variables with the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (lines[i][secondVarStart] == ' ' && lines[i][secondVarStart + 1] == '$' && lines[i][secondVarStart + 2] == ':' && lines[i][secondVarStart + 3] == 'i' && lines[i][secondVarStart + 4] == 'n' && lines[i][secondVarStart + 5] == 't' && lines[i][secondVarStart + 6] == ':') {
+                if (typet != 1) {
+                    std::cout << "\nERROR:\nmessage: You must use same type variables with the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else if (lines[i][secondVarStart] == ' ' && lines[i][secondVarStart + 1] == '$' && lines[i][secondVarStart + 2] == ':' && lines[i][secondVarStart + 3] == 'd' && lines[i][secondVarStart + 4] == 'b' && lines[i][secondVarStart + 5] == 'l' && lines[i][secondVarStart + 6] == ':') {
+                if (typet != 2) {
+                    std::cout << "\nERROR:\nmessage: You must use same type variables with the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            else {
+                std::cout << "\nERROR:\nmessage: You must use variables with the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                return;
+            }
+
+            secondVarStart += 7;
+
+            for (int j = secondVarStart; lines[i][j] != '_'; j++)   {
+                secondVar += lines[i][j];
+            }
+
+            try {
+                if (typet == 0) {
+                    std::swap(stringVariables.at(firstVar), stringVariables.at(secondVar));
+                }
+                else if (typet == 1) {
+                    std::swap(intVariables.at(firstVar), intVariables.at(secondVar));
+                }
+                else if (typet == 2) {
+                    std::swap(doubleVariables.at(firstVar), doubleVariables.at(secondVar));
+                }
+                else {
+                    std::cout << "\nERROR:\nmessage: Something wrong -variable types- in the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                    return;
+                }
+            }
+            catch(const std::exception& e) {
+                std::cout << "\nERROR:\nmessage: Undefined variable in the SWAP command at line: " << std::to_string(i + 1) << "\n";
+                return;
+            }
+        }
 
 
 

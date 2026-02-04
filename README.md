@@ -3,7 +3,7 @@
 hasanbly scripting language
 <br> 
 <br>
-<b>current version 1.9</b>
+<b>current version 2.0</b>
 <br>
 [version 0.0, made on 05.10.2022]
 <br>
